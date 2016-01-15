@@ -1,0 +1,309 @@
+@import "../../bourbon/_bourbon";
+
+
+
+*{
+  -webkit-box-sizing: border-box !important;
+  -moz-box-sizing: border-box !important;
+  box-sizing: border-box !important;
+}
+
+
+
+body {
+    overflow: hidden;
+}
+
+
+
+.wp-sb-collapse-sidebar {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  z-index: 9999;
+  text-decoration: none;
+  color: #333333;
+  font-family: "Open Sans",sans-serif;
+
+  .wp-sb-sidebar-arrow {
+    float: left;
+    border-radius: 50%;
+    height: 20px;
+    margin: 0 2px;
+    overflow: hidden;
+    width: 20px;
+    background: #EEE none repeat scroll 0% 0%;
+
+    &::before {
+      display: inline-block;
+      content: "\f148";
+      font: 400 20px/1 dashicons;
+      padding: 0px;
+      -moz-osx-font-smoothing: grayscale;
+    }
+  }
+
+  .wp-sb-sidebar-label {
+    line-height: 23px;
+    vertical-align: middle;
+    display: inline-block;
+    font-size: 14px;
+  }
+
+  @include clearfix();
+
+}
+
+
+
+.wp-sb-panel {
+  font-size: 14px;
+  line-height: 1.6;
+  background: #EEEEEE;
+  width: 300px;
+  position: fixed;
+  overflow: hidden;
+  display: block;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: auto;
+  border-right: 1px solid #ddd;
+  font-family: "Open Sans",sans-serif;
+
+  @include transform( translateX(0%) );
+  @include transition(200ms ease);
+
+  .wp-sb-panel-content {
+     position: relative;
+     display: block;
+     height: 100%;
+     width: 100%;
+  }
+  .wp-sb-elements, .wp-sb-sections {
+    position: relative;
+    display: block;
+    height: 100%;
+    width: 100%;
+    @include transition(200ms ease);
+  }
+
+
+  .wp-sb-actions {
+      border-bottom: 1px solid #ddd;
+      position: absolute;
+      left: 0px;
+      right: 0px;
+      height: 46px;
+      padding: 0px 15px;
+      line-height: 45px;
+      z-index: 10;
+      margin: 0px;
+      border-top: medium none;
+      box-shadow: none;
+      a {
+        text-decoration: none;
+      }
+  }
+  .wp-sb-close {
+    &:before {
+      font: 400 22px/45px dashicons;
+      content: "\f335";
+      position: relative;
+      top: 1px;
+      left: 13px;
+    }
+    display: block;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 45px;
+    height: 45px;
+    padding: 0px 2px 0px 0px;
+    background: #EEE none repeat scroll 0% 0%;
+    border-right: 1px solid #DDD;
+    color: #444;
+    text-align: left;
+    cursor: pointer;
+    transition: color 0.1s ease-in-out 0s, background 0.1s ease-in-out 0s;
+    box-sizing: content-box;
+  }
+  .wp-sb-save {
+    display: block;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 45px;
+    padding: 0px 10px;
+    background: #EEE none repeat scroll 0% 0%;
+    border-left: 1px solid #dddddd;
+    color: #444;
+    text-align: center;
+    cursor: pointer;
+    transition: color 0.1s ease-in-out 0s, background 0.1s ease-in-out 0s;
+    box-sizing: content-box;
+  }
+
+  .wp-sb-sections {
+      padding-top: 60px;
+      @include transform( translateX(0%) );
+      @include transition(200ms ease);
+      overflow: auto;
+      .wp-sb-section-title {
+          font-size: 18px;
+          font-weight: normal;
+          margin: 0px;
+          padding: 15px 10px;
+          background: #fff;
+          border-bottom: 1px solid #EEE;
+          &::before {
+            content: "\f345";
+            font-family: "dashicons";
+            float: right;
+          }
+          @include clearfix();
+          cursor: pointer;
+      }
+
+      .wp-sb-elements {
+          display: none;
+          @include transform( translateX(200%) );
+          @include transition(200ms ease);
+          top: 0px;
+          padding-top: 46px;
+          position: absolute;
+          right: 0px;
+          width: 0px;
+
+      }
+
+  }
+
+  .wp-sb-e-section-title {
+      background: #FFFFFF;
+      border-bottom: 1px solid #dddddd;
+      button {
+        display: block;
+        float: left;
+        width: 48px;
+        height: 74px;
+        padding: 0px 24px 0px 0px;
+        margin: 0px;
+        background: #FFF none repeat scroll 0% 0%;
+        border: 0px none;
+        border-right: 1px solid #dddddd;
+        box-shadow: none;
+        cursor: pointer;
+        transition: left 0.18s ease-in-out 0s, color 0.1s ease-in-out 0s, background 0.1s ease-in-out 0s;
+        &::before {
+          content: "\f341";
+          font: 400 20px/72px dashicons;
+          position: relative;
+          left: 13px;
+        }
+      }
+    h3 {
+      font-size: 20px;
+      font-weight: 200;
+      line-height: 26px;
+      display: block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      padding: 10px 10px 12px 14px;
+      margin: 0px;
+      span {
+        font-size: 13px;
+        display: block;
+        font-weight: 400;
+      }
+    }
+  }
+
+  &.s-open {
+
+      .wp-sb-sections {
+        @include transform( translateX(-100%) );
+        @include transition(200ms ease);
+        overflow: initial;
+      }
+     .wp-sb-section  {
+        &.open {
+          .wp-sb-elements {
+            display: block;
+            @include transform( translateX(100%) );
+            position: absolute;
+            bottom: 0px;
+            width: 300px;
+          }
+        }
+     }
+  }
+
+  .wp-sb-elements-wrap{
+      overflow: auto;
+      height: 100%;
+      top: 0px;
+      bottom: 0px;
+      img {
+          max-width: 100%;
+      }
+      .wp-sb-element {
+          padding: 15px;
+      }
+      .fix-height {
+          height: 30px;
+          display: block;
+      }
+  }
+
+
+}
+
+.wp-sb-builder-content-wrap {
+    position: fixed;
+    top: 0px;
+    left: 300px;
+    right: 0px;
+    bottom: 0px;
+    overflow: auto;
+    height: 100%;
+    display: block;
+    @include transition(200ms ease);
+}
+
+.wp-sb-sidebar-collapse {
+  .wp-sb-panel {
+    @include transform( translateX(-100%) );
+  }
+  .wp-sb-builder-content-wrap {
+    left: 0px;
+  }
+  .wp-sb-collapse-sidebar {
+    .wp-sb-sidebar-arrow {
+      @include transform( rotate(180.001deg) );
+    }
+    .wp-sb-sidebar-label {
+        display: none;
+    }
+
+  }
+}
+
+.wp-sb-builder-content-wrap {
+  .wp-sb-builder-area {
+      position: relative;
+  }
+}
+
+/* Modal settings */
+.wp-sb-modal {
+  &.modal-dialog {
+      position: absolute;
+      margin: 0px;
+      .modal-body-wrapper {
+          overflow: auto;
+          height: 300px;
+      }
+  }
+}
