@@ -350,3 +350,8 @@ body {
   overflow: auto;
   height: 300px;
 }
+/* line 310, builder.scss */
+.wp-sb-modal .buttons-select label {
+  display: block;
+  margin-bottom: 15px;
+}

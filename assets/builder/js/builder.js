@@ -16,7 +16,7 @@ var WP_PB = function( $context ){
     that.settings = $context.attr( 'data-settings' ) || '{}';
     that.settings =  JSON.parse( that.settings );
     //console.log(  that );
-    that.values = {};
+    that.values = { 'fields': {}, 'settings': {} };
 
 
     /**
@@ -49,16 +49,17 @@ var WP_PB = function( $context ){
     that.updateData =  function( $element, field , key ){
 
         if ( field === 'inline' ) {
-            that.values[ key ] = $element.text();
+            that.values['fields'][ key ] = $element.text();
             $context.attr( 'data-values', JSON.stringify( that.values ) );
+            $context.trigger( 'change' );
         }
 
     };
 
     that.updateDataKey =  function( $element, key ,value ){
-        that.values[ key ] = value;
+        that.values['fields'][ key ] = value;
         $context.attr( 'data-values', JSON.stringify( that.values ) );
-
+        $context.trigger( 'change' );
     };
 
 
@@ -89,7 +90,12 @@ var WP_PB = function( $context ){
                         element.on( 'click', function( e ){
                             e.preventDefault();
                             if ( element.attr( 'data-open-modal' ) !== 'y' ) {
-                                that.open_modal( element , field, key  );
+                                data_default = element.attr( 'data-default' ) || '{}';
+                                data_default = JSON.parse( data_default );
+                                data_default['label']  = element.text();
+                                data_default['target'] = element.attr( 'target' ) || '';
+                                data_default['url'] = element.attr( 'href' ) || '#';
+                                that.open_modal( element , field, key, data_default  );
                             }
 
                         } );
@@ -108,7 +114,7 @@ var WP_PB = function( $context ){
     };
 
 
-    that.open_modal = function( element, field, key, $values ){
+    that.open_modal = function( element, field, key, default_values ){
 
 
         var wrap = $( '.wp-sb-builder-content-wrap' );
@@ -118,9 +124,11 @@ var WP_PB = function( $context ){
         var ww = wrap.width();
 
         var html = '';
-        var data =  that.values[ key ];
+        var data =  that.values['fields'][ key ];
         if (  typeof data === "undefined" ) {
-            data = {};
+           // data = element.attr( 'data-default' ) || '{}';
+            //data = JSON.parse( data );
+            data = default_values;
         }
         if ( $( '#wp-sb-field-'+field+'-tpl').length > 0 ) {
            // html = $( '#wp-sb-field-'+field+'-tpl' ).html()
@@ -153,13 +161,12 @@ var WP_PB = function( $context ){
             //element.replaceWith( current );
         } );
 
-
         // When save
         modal.on( 'click', '.wp-sb-modal-save', function( e ){
             e.preventDefault();
             var data =  $( 'form', modal ).serializeObject();
             that.updateDataKey( element, key, data );
-            $( 'window').trigger( 'wp_sb_modal_save', [ data, element, field, key ] );
+            $( window ).trigger( 'wp_sb_modal_save', [ data, element, field, key ] );
             modal.remove();
             element.removeAttr( 'data-open-modal', 'n' );
         } );
@@ -184,10 +191,17 @@ var WP_PB = function( $context ){
 
 jQuery( document ).ready( function( $ ){
 
-
     //---------------
     $( '.wp-sb-builder-area .section').each( function(){
         new WP_PB( $( this ) );
+        $( this ).bind( 'change', function(){
+            var data = {};
+            $( '.wp-sb-builder-area .section').each( function( index ){
+                var _data = $( this).attr( 'data-values' ) || '{}';
+                data[ index ] = JSON.parse( _data );
+            } );
+            $( '#wb-sb-template-content').val( JSON.stringify( data ) );
+        } );
     } );
     //---------------
 

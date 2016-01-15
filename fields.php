@@ -48,56 +48,59 @@
 
                 <div class="form-control">
                     <!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
-                    <div class="checkbox">
-                        <label>
-                            <input type="radio" <# if ( data.button_style === 'btn-primary' || data.button_style === '' ) { #> checked="checked" <# } #> name="button_style" value="btn-primary"> <span class="btn btn-primary">Primary</span>
-                        </label>
-                        <label>
-                            <input type="radio" <# if ( data.button_style === 'btn-secondary' ) { #> checked="checked" <# } #> name="button_style" value="btn-secondary">  <span  class="btn btn-secondary">Secondary</span>
-                        </label>
-                        <label>
-                            <input type="radio" <# if ( data.button_style === 'btn-success' ) { #> checked="checked" <# } #> name="button_style" value="btn-success">   <span class="btn btn-success">Success</span>
-                        </label>
-                        <label>
-                            <input type="radio" <# if ( data.button_style === 'btn-info' ) { #> checked="checked" <# } #> name="button_style" value="btn-info">   <span class="btn btn-info">Info</span>
-                        </label>
+                    <div class="checkbox buttons-select row">
+                       <div class="col col-md-6">
+                           <label>
+                               <input type="radio" <# if ( ! data.button_style || data.button_style === 'btn-primary' || data.button_style == '' ) { #> checked="checked" <# } #> name="button_style" value="btn-primary"> <span class="btn btn-primary">Primary</span>
+                           </label>
+                           <label>
+                               <input type="radio" <# if ( data.button_style === 'btn-secondary' ) { #> checked="checked" <# } #> name="button_style" value="btn-secondary">  <span  class="btn btn-secondary">Secondary</span>
+                           </label>
+                           <label>
+                               <input type="radio" <# if ( data.button_style === 'btn-success' ) { #> checked="checked" <# } #> name="button_style" value="btn-success">   <span class="btn btn-success">Success</span>
+                           </label>
+                           <label>
+                               <input type="radio" <# if ( data.button_style === 'btn-info' ) { #> checked="checked" <# } #> name="button_style" value="btn-info">   <span class="btn btn-info">Info</span>
+                           </label>
 
-                        <label>
-                            <input type="radio" <# if ( data.button_style === 'btn-warning' ) { #> checked="checked" <# } #>  name="button_style" value="btn-warning">  <span class="btn btn-warning">Warning</span>
-                        </label>
+                           <label>
+                               <input type="radio" <# if ( data.button_style === 'btn-warning' ) { #> checked="checked" <# } #>  name="button_style" value="btn-warning">  <span class="btn btn-warning">Warning</span>
+                           </label>
 
-                        <label>
-                            <input type="radio" <# if ( data.button_style === 'btn-danger' ) { #> checked="checked" <# } #>  name="button_style" value="btn-danger">  <span class="btn btn-danger">Danger</span>
-                        </label>
+                           <label>
+                               <input type="radio" <# if ( data.button_style === 'btn-danger' ) { #> checked="checked" <# } #>  name="button_style" value="btn-danger">  <span class="btn btn-danger">Danger</span>
+                           </label>
 
-                        <label>
-                            <input type="radio" <# if ( data.button_style === 'btn-link' ) { #> checked="checked" <# } #>  name="button_style" value="btn-link">  <span class="btn btn-link">Link</span>
-                        </label>
+                           <label>
+                               <input type="radio" <# if ( data.button_style === 'btn-link' ) { #> checked="checked" <# } #>  name="button_style" value="btn-link">  <span class="btn btn-link">Link</span>
+                           </label>
+                       </div>
 
-                        <hr/>
 
-                        <label>
-                            <input type="radio" <# if ( data.button_style === 'btn-primary-outline' ) { #> checked="checked" <# } #>  name="button_style" value="btn-primary-outline">   <span  class="btn btn-primary-outline">Primary</span>
-                        </label>
+                        <div class="col col-md-6">
+                            <label>
+                                <input type="radio" <# if ( data.button_style === 'btn-primary-outline' ) { #> checked="checked" <# } #>  name="button_style" value="btn-primary-outline">   <span  class="btn btn-primary-outline">Primary</span>
+                            </label>
 
-                        <label>
-                            <input type="radio" <# if ( data.button_style === 'btn-secondary-outline' ) { #> checked="checked" <# } #>  name="button_style" value="btn-secondary-outline">   <span  class="btn btn-secondary-outline">Secondary</span>
-                        </label>
+                            <label>
+                                <input type="radio" <# if ( data.button_style === 'btn-secondary-outline' ) { #> checked="checked" <# } #>  name="button_style" value="btn-secondary-outline">   <span  class="btn btn-secondary-outline">Secondary</span>
+                            </label>
 
-                        <label>
-                            <input type="radio" <# if ( data.button_style === 'btn-success-outline' ) { #> checked="checked" <# } #>  name="button_style" value="btn-success-outline">    <span class="btn btn-success-outline">Success</span>
-                        </label>
-                        <label>
-                            <input type="radio" <# if ( data.button_style === 'btn-info-outline' ) { #> checked="checked" <# } #>  name="button_style" value="btn-info-outline">    <span class="btn btn-info-outline">Info</span>
-                        </label>
+                            <label>
+                                <input type="radio" <# if ( data.button_style === 'btn-success-outline' ) { #> checked="checked" <# } #>  name="button_style" value="btn-success-outline">    <span class="btn btn-success-outline">Success</span>
+                            </label>
+                            <label>
+                                <input type="radio" <# if ( data.button_style === 'btn-info-outline' ) { #> checked="checked" <# } #>  name="button_style" value="btn-info-outline">    <span class="btn btn-info-outline">Info</span>
+                            </label>
 
-                        <label>
-                            <input type="radio" <# if ( data.button_style === 'btn-warning-outline' ) { #> checked="checked" <# } #>  name="button_style" value="btn-warning-outline">   <span class="btn btn-warning-outline">Warning</span>
-                        </label>
+                            <label>
+                                <input type="radio" <# if ( data.button_style === 'btn-warning-outline' ) { #> checked="checked" <# } #>  name="button_style" value="btn-warning-outline">   <span class="btn btn-warning-outline">Warning</span>
+                            </label>
 
-                        <label>
-                            <input type="radio" <# if ( data.button_style === 'btn-danger-outline' ) { #> checked="checked" <# } #>  name="button_style" value="btn-danger-outline">   <span  class="btn btn-danger-outline">Danger</span>
-                        </label>
+                            <label>
+                                <input type="radio" <# if ( data.button_style === 'btn-danger-outline' ) { #> checked="checked" <# } #>  name="button_style" value="btn-danger-outline">   <span  class="btn btn-danger-outline">Danger</span>
+                            </label>
+                        </div>
 
                     </div>
 

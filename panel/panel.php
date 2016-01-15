@@ -9,6 +9,7 @@ $categories = array(
 global $wp_sb_sections;
 
 ?>
+<input  type="hidden" id="wb-sb-template-content">
 <div class="wp-sb-panel">
     <div class="wp-sb-actions">
         <a class="wp-sb-close"  href="#"></a>

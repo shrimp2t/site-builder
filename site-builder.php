@@ -111,8 +111,9 @@ class WP_Site_Builder {
 
 
 
-            wp_enqueue_script( 'site-builder-editor', WP_SITE_BUILDER_URL.'assets/builder/js/editor.js', array( 'jquery' ) );
+
             wp_enqueue_script( 'site-builder', WP_SITE_BUILDER_URL.'assets/builder/js/builder.js', array( 'jquery' ) );
+            wp_enqueue_script( 'site-builder-live-view', WP_SITE_BUILDER_URL.'assets/builder/js/live-view.js', array( 'jquery' ) );
 
             add_action( 'wp_footer', array( $this ,'load_panel' ) );
 
