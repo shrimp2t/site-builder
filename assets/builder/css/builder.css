@@ -349,5 +349,34 @@ body {
 .wp-sb-modal .buttons-select label {
   display: block;
   margin-bottom: 15px; }
+.wp-sb-modal .form-group label, .wp-sb-modal .form-group .text-muted {
+  display: block; }
+.wp-sb-modal .wp-picker-holder {
+  position: absolute;
+  z-index: 999; }
+.wp-sb-modal .item-media {
+  height: 100px;
+  max-width: 100%;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  background-position: center center;
+  position: relative;
+  background-color: #f5f5f5; }
+  .wp-sb-modal .item-media .dashicons {
+    position: absolute;
+    bottom: 0px;
+    height: 30px;
+    width: 30px;
+    line-height: 30px;
+    font-size: 24px;
+    display: block;
+    background: #EDEDED;
+    cursor: pointer; }
+    .wp-sb-modal .item-media .dashicons.upload-button {
+      left: 0px; }
+    .wp-sb-modal .item-media .dashicons.remove-button {
+      right: 0px; }
 
 /*# sourceMappingURL=builder.css.map */

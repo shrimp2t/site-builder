@@ -36,27 +36,22 @@
             ),
             'settings' =>  array(
                 'bg' => array(
-                    'type' => 'background',
-                    'default' => array (
-                        'img_url' => '',
-                        'img_id' => '',
-                        'bg_color' => '',
-                        'bg_type' => '',
-                    )
+                    'img_url' => '',
+                    'img_id' => '',
+                    'bg_color' => '',
+                    'bg_type' => '',
                 ),
-                'content_box' => array(),
+                'content_box' => array( // add class content-box to element want to see live view
+                    'bg_color' => '',
+                    'opacity' => '',
+                    'text_color' => '',
+                ),
                 'typography' =>  array(
-                    'type' => 'background',
-                    'default' => array(
-                        'font' => '',
-                        'size' => '',
-                        'color' => '',
-                    ),
+                    'font' => '',
+                    'size' => '',
+                    'color' => '',
                 ),
-                'align' =>  array(
-                    'type' => 'align',
-                    'default' => 'left',
-                ),
+                'align' => 'left',
 
             )
 
@@ -65,13 +60,39 @@
         ?>
 
         <div class="section" data-settings="<?php echo esc_attr( json_encode( $settings ) ); ?>">
-            <div class="jumbotron">
-                <div class="container">
-                    <h1  data-content="title">Hello, world!</h1>
-                    <p  data-content="title">This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-                    <p><a data-default="<?php echo esc_attr( json_encode( array( 'button_style' =>'btn-primary', 'size'=>'btn-lg' ) ) ); ?>" data-content="button" href="#" class="btn btn-primary btn-lg">Learn more »</a></p>
+
+            <div class="container">
+                <h1  data-content="title">Hello, world!</h1>
+                <p  data-content="title">This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+                <p><a data-default="<?php echo esc_attr( json_encode( array( 'button_style' =>'btn-primary', 'size'=>'btn-lg' ) ) ); ?>" data-content="button" href="#" class="btn btn-primary btn-lg">Learn more »</a></p>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 content-box">
+                        <h4>Subheading</h4>
+                        <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+
+                        <h4>Subheading</h4>
+                        <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+
+                        <h4>Subheading</h4>
+                        <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+                    </div>
+
+                    <div class="col-lg-6 content-box">
+                        <h4>Subheading</h4>
+                        <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+
+                        <h4>Subheading</h4>
+                        <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+
+                        <h4>Subheading</h4>
+                        <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+                    </div>
                 </div>
             </div>
+
         </div>
 
 

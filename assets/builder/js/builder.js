@@ -18,10 +18,6 @@ var WP_PB = function( $context ){
     //console.log(  that );
     that.values = { 'tag': that.settings.tag ,  'fields': {}, 'settings': {} };
 
-
-
-
-
     /**
      * Function that loads the Mustache template
      */
@@ -61,6 +57,13 @@ var WP_PB = function( $context ){
 
     that.updateDataKey =  function( $element, key ,value ){
         that.values['fields'][ key ] = value;
+        $context.attr( 'data-values', JSON.stringify( that.values ) );
+        $context.trigger( 'change' );
+    };
+
+
+    that.updateDataSettings =  function( key ,value ){
+        that.values['settings'][ key ] = value;
         $context.attr( 'data-values', JSON.stringify( that.values ) );
         $context.trigger( 'change' );
     };
@@ -216,7 +219,7 @@ var WP_PB = function( $context ){
                 e.preventDefault();
 
                 $( '.image_id, .image_url', _item).val( '' );
-                $( '.thumbnail-image', _item ).html( '' );
+                $('.item-media', $context).css( 'background-image', 'none'  );
 
                 $( '.current', _item ).removeClass( 'show' ).addClass( 'hide' );
 
@@ -243,9 +246,9 @@ var WP_PB = function( $context ){
                     $( '.current', _item ).removeClass( 'hide').addClass( 'show' );
 
                     $( '.image_url', _item ).val(img_url);
-                    preview = '<img src="' + img_url + '" alt="">';
+                    //preview = '<img src="' + img_url + '" alt="">';
                     //$(' img', _item).remove();
-                    $( '.thumbnail-image', _item ).html( preview );
+                    $('.item-media', $context).css( 'background-image', 'url("'+img_url+'")'  );
                     $( '.remove-button', _item).show();
                     $( '.image_id', _item).trigger( 'change' );
 
@@ -263,17 +266,15 @@ var WP_PB = function( $context ){
 
 
     // When settings bg
-    $context.on( 'click', '.wp-sb-section-edit .bg-image' ,function( e ) {
+    $context.on( 'click', '.wp-sb-section-edit .bg' ,function( e ) {
         e.preventDefault();
 
-        //var data =  that.values['fields'][ key ];
-        var data =  {};
+        var data =  that.values['settings']['bg'];
         if (  typeof data === "undefined" ) {
-            // data = element.attr( 'data-default' ) || '{}';
-            //data = JSON.parse( data );
-            data = default_values;
+            data = that.settings.settings.bg;
         }
 
+        console.log( data );
         var modal = '';
         if ( $( '#wp-sb-section-bg'  ).length > 0 ) {
             modal = $( that.template( data , '#wp-sb-section-bg' ) );
@@ -282,13 +283,76 @@ var WP_PB = function( $context ){
         $( '.wp-sb-builder-area').append( modal );
         that._setup_modal( );
         that._handleMedia( modal );
-        $('.input_color', modal ).wpColorPicker();
+        $('.input_color', modal).each( function(){
+            var input = $( this );
+            input.wpColorPicker( {
+                change: function(event, ui ) {
+                    input.val( ui.color.toString() ).trigger( 'change' );
+                }
+            } );
+        } );
 
         modal.on( 'click', '[data-dismiss="modal"]', function(){
             modal.remove();
         } );
 
+        modal.on( 'change', 'input, select' , function() {
+            var data =  $( 'form', modal ).serializeObject();
+            that.updateDataSettings(  'bg', data );
+            $( window ).trigger( 'wp_sb_section_bg_change', [ data, $context, 'bg' ] );
+
+        } );
     } );
+
+
+    // When Content box change
+
+    $context.on( 'click', '.wp-sb-section-edit .box' ,function( e ) {
+        e.preventDefault();
+
+        var data =  that.values['settings']['content_box'];
+        if (  typeof data === "undefined" ) {
+            data = that.settings.settings.content_box;
+        }
+
+        var modal = '';
+        if ( $( '#wp-sb-section-content-box'  ).length > 0 ) {
+            modal = $( that.template( data , '#wp-sb-section-content-box' ) );
+        }
+
+        $( '.wp-sb-builder-area').append( modal );
+        that._setup_modal( );
+        that._handleMedia( modal );
+        $('.input_color', modal).each( function(){
+            var input = $( this );
+            input.wpColorPicker( {
+                change: function(event, ui ) {
+                    input.val( ui.color.toString() ).trigger( 'change' );
+                }
+            } );
+        } );
+
+        modal.on( 'click', '[data-dismiss="modal"]', function(){
+            modal.remove();
+        } );
+
+        modal.on( 'change keyup', 'input, select' , function() {
+            var data =  $( 'form', modal ).serializeObject();
+            that.updateDataSettings( 'content_box', data );
+            $( window ).trigger( 'wp_sb_section_content_box_change', [ data, $context, 'bg' ] );
+
+        } );
+    } );
+
+    // When click to text align icon
+    // text-align
+
+    $context.on( 'click', '.wp-sb-section-edit .text-align li' ,function( e ) {
+        e.preventDefault();
+        var value = $( this ).attr( 'data-value' );
+        that.updateDataSettings( 'align', value );
+        $( window ).trigger( 'wp_sb_section_align_change', [ value, $context, 'align' ] );
+    });
 
 
 

@@ -414,4 +414,44 @@ body {
 
       }
   }
+
+  .form-group {
+      label, .text-muted {
+        display: block;
+      }
+  }
+  .wp-picker-holder {
+      position: absolute;
+      z-index: 999;
+  }
+  .item-media {
+      height: 100px;
+      max-width: 100%;
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+      background-size: cover;
+      background-position: center center;
+      position: relative;
+      background-color: #f5f5f5;
+      .dashicons {
+        position: absolute;
+        bottom: 0px;
+        height: 30px;
+        width: 30px;
+        line-height: 30px;
+        font-size: 24px;
+        display: block;
+        background: #EDEDED;
+        cursor: pointer;
+        &.upload-button {
+            left: 0px;
+        }
+        &.remove-button {
+          right: 0px;
+        }
+      }
+  }
+
+
 }
