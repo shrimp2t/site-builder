@@ -10,7 +10,7 @@ console.log( 'called live view' );
 
 jQuery( document ).ready( function( $ ){
     $( window ) .on( 'wp_sb_modal_save', function ( modal, data, element, field, key) {
-        if ( field === 'button' ) {
+        if ( field.type === 'button' ) {
             live_view_button( data, element );
         }
     } );
@@ -29,6 +29,7 @@ jQuery( document ).ready( function( $ ){
         if ( typeof data.size !== "undefined" ) {
             classes.push( data.size );
         }
+
         element.attr( 'class', '' );
         element.addClass( classes.join(' ') );
 

@@ -16,7 +16,10 @@ var WP_PB = function( $context ){
     that.settings = $context.attr( 'data-settings' ) || '{}';
     that.settings =  JSON.parse( that.settings );
     //console.log(  that );
-    that.values = { 'fields': {}, 'settings': {} };
+    that.values = { 'tag': that.settings.tag ,  'fields': {}, 'settings': {} };
+
+
+
 
 
     /**
@@ -48,7 +51,7 @@ var WP_PB = function( $context ){
 
     that.updateData =  function( $element, field , key ){
 
-        if ( field === 'inline' ) {
+        if ( field.type === 'inline' ) {
             that.values['fields'][ key ] = $element.text();
             $context.attr( 'data-values', JSON.stringify( that.values ) );
             $context.trigger( 'change' );
@@ -73,7 +76,9 @@ var WP_PB = function( $context ){
 
                 var element =  $( '[data-content="'+key+'"]', $context );
 
-                switch ( field ) {
+                //console.log( field );
+
+                switch ( field.type ) {
                     case 'inline':
 
                             element.on( 'click', function( e ){
@@ -95,7 +100,7 @@ var WP_PB = function( $context ){
                                 data_default['label']  = element.text();
                                 data_default['target'] = element.attr( 'target' ) || '';
                                 data_default['url'] = element.attr( 'href' ) || '#';
-                                that.open_modal( element , field, key, data_default  );
+                                that.element_modal( element , field, key, data_default  );
                             }
 
                         } );
@@ -113,33 +118,15 @@ var WP_PB = function( $context ){
 
     };
 
-
-    that.open_modal = function( element, field, key, default_values ){
-
+    that._setup_modal =  function( ){
 
         var wrap = $( '.wp-sb-builder-content-wrap' );
-        var modal = $( $( '#wp-sb-settings-modal').html() );
 
-        $( '.wp-sb-builder-area').append( modal );
         var ww = wrap.width();
+        var modal_w = $( '.modal-dialog', wrap ).width();
+        $( '.modal-dialog', wrap ).css( { 'top': '30px', 'left': ( (  ww - modal_w  ) / 2) + 'px' } );
 
-        var html = '';
-        var data =  that.values['fields'][ key ];
-        if (  typeof data === "undefined" ) {
-           // data = element.attr( 'data-default' ) || '{}';
-            //data = JSON.parse( data );
-            data = default_values;
-        }
-        if ( $( '#wp-sb-field-'+field+'-tpl').length > 0 ) {
-           // html = $( '#wp-sb-field-'+field+'-tpl' ).html()
-            html = $( that.template( data , '#wp-sb-field-'+field+'-tpl' ) );
-        }
-
-        $( '.modal-body', modal ).html( html );
-        var modal_w = modal.width();
-        modal.css( { 'top': '30px', 'left': ( (  ww - modal_w  ) / 2) + 'px' } );
-
-        $('.modal-dialog').draggable({
+        $( '.modal-dialog', wrap ).draggable({
             containment: wrap
         }).resizable( {
             containment: wrap,
@@ -153,12 +140,34 @@ var WP_PB = function( $context ){
             }
         });
 
+    };
+
+
+    that.element_modal = function( element, field, key, default_values ){
+        var modal = $( $( '#wp-sb-settings-modal').html() );
+
+        var data =  that.values['fields'][ key ];
+        if (  typeof data === "undefined" ) {
+            // data = element.attr( 'data-default' ) || '{}';
+            //data = JSON.parse( data );
+            data = default_values;
+        }
+
+        $( '.wp-sb-builder-area').append( modal );
+        var html = '';
+        if ( $( '#wp-sb-field-'+field.type+'-tpl').length > 0 ) {
+            // html = $( '#wp-sb-field-'+field+'-tpl' ).html()
+            html = $( that.template( data , '#wp-sb-field-'+field.type+'-tpl' ) );
+        }
+
+        $( '.modal-body', modal ).html( html );
+        that._setup_modal( modal );
+
         element.attr( 'data-open-modal', 'y' );
 
         modal.on( 'click', '[data-dismiss="modal"]', function(){
             modal.remove();
             element.removeAttr( 'data-open-modal', 'n' );
-            //element.replaceWith( current );
         } );
 
         // When save
@@ -172,14 +181,120 @@ var WP_PB = function( $context ){
         } );
         // END When save
 
-
-
-
-
-
     };
 
+    that.when_focus = function(){
+        $context.append( $( '#wp-sb-section-edit-menu').html() );
+        $context.on( 'click', function(){
+            $( '.wp-sb-builder-area .section').removeClass( 'section-editing' );
+            $context.addClass( 'section-editing' );
+        } );
+    };
+
+
+
+    var frame = wp.media({
+        title: wp.media.view.l10n.addMedia,
+        multiple: false,
+        library: {type: 'image'},
+        //button : { text : 'Insert' }
+    });
+
+    frame.on('close', function () {
+        // get selections and save to hidden input plus other AJAX stuff etc.
+        var selection = frame.state().get('selection');
+        // console.log(selection);
+    });
+
+
+    that._handleMedia = function( $context ) {
+        $('.item-media', $context).each( function(){
+
+            var _item = $( this );
+            // when remove item
+            $( '.remove-button', _item ).on( 'click', function( e ){
+                e.preventDefault();
+
+                $( '.image_id, .image_url', _item).val( '' );
+                $( '.thumbnail-image', _item ).html( '' );
+
+                $( '.current', _item ).removeClass( 'show' ).addClass( 'hide' );
+
+                $( this).hide();
+
+                $('.upload-button', _item ).text( $('.upload-button', _item ).attr( 'data-add-txt' ) );
+                $( '.image_id', _item).trigger( 'change' );
+
+            } );
+
+            // when upload item
+            $('.upload-button', _item ).on('click', function () {
+                var btn = $( this );
+
+                frame.on('select', function () {
+                    // Grab our attachment selection and construct a JSON representation of the model.
+                    var media_attachment = frame.state().get('selection').first().toJSON();
+                    // media_attachment= JSON.stringify(media_attachment);
+
+                    $( '.image_id', _item ).val(media_attachment.id);
+                    var preview, img_url;
+                    img_url = media_attachment.url;
+
+                    $( '.current', _item ).removeClass( 'hide').addClass( 'show' );
+
+                    $( '.image_url', _item ).val(img_url);
+                    preview = '<img src="' + img_url + '" alt="">';
+                    //$(' img', _item).remove();
+                    $( '.thumbnail-image', _item ).html( preview );
+                    $( '.remove-button', _item).show();
+                    $( '.image_id', _item).trigger( 'change' );
+
+                    btn.text( btn.attr( 'data-change-txt' ) );
+
+                });
+
+                frame.open();
+
+            });
+
+
+        } );
+    };
+
+
+    // When settings bg
+    $context.on( 'click', '.wp-sb-section-edit .bg-image' ,function( e ) {
+        e.preventDefault();
+
+        //var data =  that.values['fields'][ key ];
+        var data =  {};
+        if (  typeof data === "undefined" ) {
+            // data = element.attr( 'data-default' ) || '{}';
+            //data = JSON.parse( data );
+            data = default_values;
+        }
+
+        var modal = '';
+        if ( $( '#wp-sb-section-bg'  ).length > 0 ) {
+            modal = $( that.template( data , '#wp-sb-section-bg' ) );
+        }
+
+        $( '.wp-sb-builder-area').append( modal );
+        that._setup_modal( );
+        that._handleMedia( modal );
+        $('.input_color', modal ).wpColorPicker();
+
+        modal.on( 'click', '[data-dismiss="modal"]', function(){
+            modal.remove();
+        } );
+
+    } );
+
+
+
+
     that.field_settings();
+    that.when_focus();
 
 };
 
@@ -191,18 +306,39 @@ var WP_PB = function( $context ){
 
 jQuery( document ).ready( function( $ ){
 
+    function update_builder_data(){
+        var data = {};
+        $( '.wp-sb-builder-area .section').each( function( index ){
+            var _data = $( this).attr( 'data-values' ) || '{}';
+            data[ index ] = JSON.parse( _data );
+        } );
+        $( '#wb-sb-template-content').val( JSON.stringify( data ) );
+    }
+
     //---------------
     $( '.wp-sb-builder-area .section').each( function(){
         new WP_PB( $( this ) );
         $( this ).bind( 'change', function(){
-            var data = {};
-            $( '.wp-sb-builder-area .section').each( function( index ){
-                var _data = $( this).attr( 'data-values' ) || '{}';
-                data[ index ] = JSON.parse( _data );
-            } );
-            $( '#wb-sb-template-content').val( JSON.stringify( data ) );
+            update_builder_data();
         } );
     } );
+
+    $( '.wp-sb-builder-area' ).bind( 'change', function(){
+        update_builder_data();
+    } );
+
+
+    $( '.wp-sb-builder-area').sortable({
+        //placeholder: "section-placeholder",
+        containment: $( '.wp-sb-builder-content-wrap'),
+        //handle: ".handle",
+        //helper: "clone",
+        change: function( event, ui ) {
+            update_builder_data();
+        },
+        handle: '.wp-section-order'
+    });
+
     //---------------
 
 

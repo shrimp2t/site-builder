@@ -91,13 +91,20 @@ class WP_Site_Builder {
 
             add_action( 'wp_head', 'wp_print_scripts' );
             add_action( 'wp_head', 'wp_print_styles' );
+            add_action( 'wp_footer', 'wp_print_styles' );
 
             add_filter('show_admin_bar', '__return_false');
 
             wp_enqueue_style( 'dashicons' );
             wp_enqueue_style( 'jquery-ui',  WP_SITE_BUILDER_URL.'assets/builder/css/jquery-ui.css' );
             wp_enqueue_style( 'site-builder', WP_SITE_BUILDER_URL.'assets/builder/css/builder.css' );
-            wp_enqueue_style( 'bootstrap', WP_SITE_BUILDER_URL.'assets/bootstrap/css/bootstrap.min.css' );
+            //wp_enqueue_style( 'bootstrap', WP_SITE_BUILDER_URL.'assets/bootstrap/css/bootstrap.min.css' );
+            wp_enqueue_style( 'bootstrap', WP_SITE_BUILDER_URL.'assets/bootstrap/scss/bootstrap.css' );
+
+            wp_enqueue_style( 'wp-color-picker' );
+
+            wp_enqueue_media();
+
 
             wp_enqueue_script( 'jquery' );
             wp_enqueue_script( 'query-ui-core' );
@@ -109,7 +116,27 @@ class WP_Site_Builder {
             wp_enqueue_script( 'json2' );
             wp_enqueue_script( 'underscore' );
 
+            wp_enqueue_script(
+                'iris',
+                admin_url( 'js/iris.min.js' ),
+                array( 'jquery-ui-draggable', 'jquery-ui-slider', 'jquery-touch-punch' ),
+                false,
+                1
+            );
+            wp_enqueue_script(
+                'wp-color-picker',
+                admin_url( 'js/color-picker.min.js' ),
+                array( 'iris' ),
+                false,
+                1
+            );
 
+            $colorpicker_l10n = array(
+                'clear' => __( 'Clear' ),
+                'defaultString' => __( 'Default' ),
+                'pick' => __( 'Select Color' )
+            );
+            wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', $colorpicker_l10n );
 
 
             wp_enqueue_script( 'site-builder', WP_SITE_BUILDER_URL.'assets/builder/js/builder.js', array( 'jquery' ) );
