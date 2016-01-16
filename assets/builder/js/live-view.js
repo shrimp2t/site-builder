@@ -44,11 +44,14 @@ jQuery( document ).ready( function( $ ){
     }
 
     // When section  BG change
+    /*
     $( window).on( 'wp_sb_section_bg_change',  function(  modal, data, $content, key ){
         $content.css( { 'background-color': data.bg_color , 'background-image': 'url("'+data.img_url+'")' } );
     } );
+    */
 
     // When context box change
+    /*
     $( window).on( 'wp_sb_section_content_box_change',  function(  modal, data, $content, key ){
         //$content.css( { 'background-color': data.bg_color , 'background-image': 'url("'+data.img_url+'")' } );
         var rgb= hexToRgb( data.bg_color );
@@ -74,6 +77,7 @@ jQuery( document ).ready( function( $ ){
     $( window).on( 'wp_sb_section_align_change',  function(  modal, data, $content, key ){
         $content.css( { 'text-align':data } );
     } );
+    */
 
 
 
