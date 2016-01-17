@@ -379,4 +379,7 @@ body {
     .wp-sb-modal .item-media .dashicons.remove-button {
       right: 0px; }
 
+.media-modal .screen-reader-text {
+  display: none; }
+
 /*# sourceMappingURL=builder.css.map */

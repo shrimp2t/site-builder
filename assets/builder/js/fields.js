@@ -174,15 +174,15 @@
                 }
             });
 
+            // Set up fields
             modal.wp_sb_fields();
 
             //When open modal
             if ( settings.open_trigger !== "" ) {
                 $( window ).trigger( settings.open_trigger, [ settings.data, modal ] );
             }
-
             if ( typeof settings.open_cb  == "function" ) {
-                settings.open_cb( data, modal );
+                settings.open_cb( settings.data, modal );
             }
 
             // When close modal

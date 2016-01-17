@@ -74,6 +74,11 @@ function wp_sb_register_section( $section_id, $settings ){
 
 
 
+global $wp_sb_fields ;
+if ( ! $wp_sb_fields ) {
+    $wp_sb_fields =  array();
+}
+
 
 
 
@@ -88,6 +93,11 @@ class WP_Site_Builder {
 
             remove_all_actions('wp_head');
             remove_all_actions('wp_footer');
+
+            // Load files
+            $this->setup_fields();
+            do_action( 'wp_sb_after_setup_fields' );
+
 
             add_action( 'wp_head', 'wp_print_scripts' );
             add_action( 'wp_head', 'wp_print_styles' );
@@ -138,13 +148,25 @@ class WP_Site_Builder {
             );
             wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', $colorpicker_l10n );
 
-
             wp_enqueue_script( 'site-builder-fields', WP_SITE_BUILDER_URL.'assets/builder/js/fields.js', array( 'jquery' ) );
+
+
+            global $wp_sb_fields;
+            if ( is_array( $wp_sb_fields ) ) {
+                foreach( $wp_sb_fields as $k => $f ){
+                    if ( $f['js'] ){
+                        // echo $f['js'];
+                        wp_enqueue_script( 'site-builder-field-'.$k, $f['js'] , array( 'jquery' ) );
+                    }
+                }
+            }
+
+
             wp_enqueue_script( 'site-builder', WP_SITE_BUILDER_URL.'assets/builder/js/builder.js', array( 'jquery' ) );
             wp_enqueue_script( 'site-builder-live-view', WP_SITE_BUILDER_URL.'assets/builder/js/live-view.js', array( 'jquery' ) );
 
             add_action( 'wp_footer', array( $this ,'load_panel' ) );
-
+            add_action( 'wp_footer', array( $this ,'load_fields' ) );
 
             include WP_SITE_BUILDER_PATH.'config.php';
 
@@ -152,13 +174,91 @@ class WP_Site_Builder {
 
     }
 
+    function setup_fields() {
+
+        global $wp_sb_fields;
+
+        if ( ! function_exists( 'list_file' )  ) {
+            require_once ABSPATH.'/wp-admin/includes/file.php';
+        }
+
+        $files =  list_files( WP_SITE_BUILDER_PATH.'fields', 1 );
+
+
+        if ( $files ) {
+            foreach( $files as $file ) {
+                if ( is_file( $file ) ) {
+
+                    $name = basename( $file );
+                    if ( strtolower( substr( $name, -4 ) ) == '.php' ) {
+                        $name =  str_replace( '.php', '', strtolower( $name ) );
+                        $wp_sb_fields[ $name ]  = array(
+                            'tpl' => $file,
+                            'js' => is_file( WP_SITE_BUILDER_URL.'fields/'.$name.'.js' ) ? WP_SITE_BUILDER_URL.'fields/'.$name.'.js' : false
+                        );
+                    }
+
+                } else {
+                    $name = basename( $file );
+                    $wp_sb_fields[ $name ]  = array(
+                        'tpl' => $file."{$name}.php",
+                        'js' => is_file( $file."{$name}.js" ) ? WP_SITE_BUILDER_URL."fields/{$name}/{$name}.js"  : false
+                    );
+                }
+
+            }
+        }
+
+    }
+
+    function load_fields(){
+        global $wp_sb_fields;
+        if ( is_array( $wp_sb_fields ) ) {
+            foreach( $wp_sb_fields as $k => $f ){
+                if ( $f['js'] ){
+                    wp_enqueue_script( 'site-builder-field-'.$k, $f['js']  );
+                }
+                if (  $f['tpl'] ){
+                    // echo $f['tpl']; die();
+                    include_once $f['tpl'];
+                }
+            }
+        }
+    }
+
+
+
+
     function  load_site_builder( $file ){
         return dirname( __FILE__ ).'/template.php';
     }
 
+    /**
+     * Get url of any dir
+     *
+     * @param string $file full path of current file in that dir
+     * @return string
+     */
+    function get_url( $file = '' ){
+        if ( 'WIN' === strtoupper( substr( PHP_OS, 0, 3 ) ) ) {
+            // Windows
+            $content_dir = str_replace( '/', DIRECTORY_SEPARATOR, WP_CONTENT_DIR );
+            $content_url = str_replace( $content_dir, WP_CONTENT_URL, trailingslashit( dirname( $file  ) ) );
+            $url = str_replace( DIRECTORY_SEPARATOR, '/', $content_url );
+        } else {
+            $url = str_replace(
+                array( WP_CONTENT_DIR, WP_PLUGIN_DIR ),
+                array( WP_CONTENT_URL, WP_PLUGIN_URL ),
+                trailingslashit( dirname( $file  ) )
+            );
+        }
+        return set_url_scheme( $url );
+    }
+
+
     function load_panel(){
         include WP_SITE_BUILDER_PATH.'panel/panel.php';
-        include WP_SITE_BUILDER_PATH.'fields.php';
+        //include WP_SITE_BUILDER_PATH.'fields.php';
     }
 }
 

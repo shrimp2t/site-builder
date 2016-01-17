@@ -113,34 +113,6 @@ var WP_PB = function( $context ){
 
     };
 
-    that.modal_editor =  function( modal, element ){
-
-
-    };
-
-    that._setup_modal =  function( ){
-
-        var wrap = $( '.wp-sb-builder-content-wrap' );
-
-        var ww = wrap.width();
-        var modal_w = $( '.modal-dialog', wrap ).width();
-        $( '.modal-dialog', wrap ).css( { 'top': '30px', 'left': ( (  ww - modal_w  ) / 2) + 'px' } );
-
-        $( '.modal-dialog', wrap ).draggable({
-            containment: wrap
-        }).resizable( {
-            containment: wrap,
-            start: function( event, ui ) {
-                var h = $( '.modal-header', ui.element ).outerHeight() + $( '.modal-footer', ui.element ).outerHeight();
-                $( '.modal-body-wrapper', ui.element ).height( ui.size.height - h );
-            },
-            resize: function( event, ui ) {
-                var h = $( '.modal-header', ui.element).outerHeight() + $( '.modal-footer', ui.element).outerHeight();
-                $( '.modal-body-wrapper', ui.element ).height( ui.size.height - h );
-            }
-        });
-
-    };
 
 
     that.element_modal = function( element, field, key, default_values ){
@@ -163,11 +135,48 @@ var WP_PB = function( $context ){
             wrap: ".wp-sb-builder-content-wrap",
             change_trigger: "wp_sb_section_bg_change",
             save_trigger: "wp_sb_modal_content_save",
-            change_cb: function( data , _modal ) {
+            open_cb: function( data, modal ) {
+
+                if ( typeof window.wp_sb_fields[ field.type ] !== "undefined" ) {
+                    if( typeof window.wp_sb_fields[ field.type].open ==="function" ) {
+                        window.wp_sb_fields[ field.type].open( {
+                            data: data,
+                            element: element,
+                            modal: modal,
+                            section: $context,
+                        } );
+                    }
+                }
 
             },
-            save_cb: function( data ){
+            change_cb: function( data, modal ) {
 
+                if ( typeof window.wp_sb_fields[ field.type ] !== "undefined" ) {
+                    if( typeof window.wp_sb_fields[ field.type].change ==="function" ) {
+                        window.wp_sb_fields[ field.type].change( {
+                            data: data,
+                            element: element,
+                            modal: modal,
+                            section: $context,
+                        } );
+                    }
+                }
+
+            },
+            save_cb: function( data, modal ){
+
+                if ( typeof window.wp_sb_fields[ field.type ] !== "undefined" ) {
+                    if( typeof window.wp_sb_fields[ field.type ].save === "function" ) {
+                        window.wp_sb_fields[ field.type ].save( {
+                            data: data,
+                            element: element,
+                            modal: modal,
+                            section: $context,
+                        } );
+                    }
+                }
+
+                /*
                 if ( field.type === 'button' ) {
                     element.text( data.label );
                     element.attr( 'href',  data.url );
@@ -182,13 +191,26 @@ var WP_PB = function( $context ){
                     if ( typeof data.size !== "undefined" ) {
                         classes.push( data.size );
                     }
-
                     element.attr( 'class', '' );
                     element.addClass( classes.join(' ') );
                 }
+                */
 
             },
-            close_cb: function(){ },
+            close_cb: function( modal ){
+
+                if ( typeof window.wp_sb_fields[ field.type ] !== "undefined" ) {
+                    if( typeof window.wp_sb_fields[ field.type].open ==="function" ) {
+                        window.wp_sb_fields[ field.type].open( {
+                            data: data,
+                            element: element,
+                            modal: modal,
+                            section: $context,
+                        } );
+                    }
+                }
+
+            },
         } );
 
 
@@ -211,7 +233,6 @@ var WP_PB = function( $context ){
         if (  typeof data === "undefined" ) {
             data = that.settings.settings.bg;
         }
-
 
         $( 'body' ).wp_sb_modal( {
             data: data,

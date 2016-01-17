@@ -5,7 +5,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title"><?php _e( "Settings", 'site-builder' );  ?></h4>
+                <h4 class="modal-title"><?php _e( "Button settings", 'site-builder' );  ?></h4>
             </div>
             <div class="modal-body-wrapper">
                 <div class="modal-body">
@@ -92,8 +92,8 @@
                             <label><?php _e( 'Button Size', 'site-builder' ); ?></label>
                             <select name="size" class="form-control">
                                 <option <# if ( data.size === 'btn-medium' ) { #> selected="selected" <# } #> value="btn-medium"><?php _e( 'Medium', 'site-builder' ) ?></option>
-                                        <option <# if ( data.size === 'btn-lg' ) { #> selected="selected" <# } #> value="btn-lg"><?php _e( 'Large', 'site-builder' ) ?></option>
-                                                <option <# if ( data.size === 'btn-sm' ) { #> selected="selected" <# } #>  value="btn-sm"><?php _e( 'Small', 'site-builder' ) ?></option>
+                                <option <# if ( data.size === 'btn-lg' ) { #> selected="selected" <# } #> value="btn-lg"><?php _e( 'Large', 'site-builder' ) ?></option>
+                                <option <# if ( data.size === 'btn-sm' ) { #> selected="selected" <# } #>  value="btn-sm"><?php _e( 'Small', 'site-builder' ) ?></option>
                             </select>
                         </fieldset>
                         <fieldset class="form-group">
