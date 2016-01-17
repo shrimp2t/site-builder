@@ -32,9 +32,19 @@ global $wp_sb_sections;
 
                         <div class="wp-sb-elements-wrap">
                             <?php foreach( $section['elements'] as $el_id => $el ) { ?>
-                                <div class="wp-sb-element">
-                                    <img src="<?php echo WP_SITE_BUILDER_URL.'blocks/thumb-001.jpg' ?>" alt="">
+                                <div class="wp-sb-element" data-el-id="<?php echo esc_attr( $el_id ); ?>">
+                                    <?php if ( $el['thumb'] ) { ?>
+                                    <img src="<?php echo esc_url( $el['thumb'] ); ?>" alt="">
+                                    <?php } ?>
+
                                     <?php echo esc_html( $el['title'] ); ?>
+                                    <script id="<?php echo esc_attr( 'wp_sb_tpl_block_'.$el_id ); ?>" type="text/html">
+                                        <?php
+                                            if ( file_exists( $el['tpl'] ) ) {
+                                                include $el['tpl'];
+                                            }
+                                        ?>
+                                    </script>
                                 </div>
                             <?php } ?>
                             <div class="fix-height"></div>

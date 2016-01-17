@@ -10,7 +10,6 @@
             // Do something to each element here.
             var $context = this;
 
-
             // Media upload
             var frame = wp.media({
                 title: wp.media.view.l10n.addMedia,

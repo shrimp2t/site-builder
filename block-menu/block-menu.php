@@ -4,23 +4,24 @@
             <li class="remove-section">
                 <span class="dashicons dashicons-trash"></span>
             </li>
-            <li class="bg">
+            <li class="block-settings" data-block-cb="bg" data-block-type="modal">
                 <span class="dashicons dashicons-format-image"></span>
             </li>
-            <li class="box">
+            <li  class="block-settings" data-block-cb="box" data-block-type="modal">
                 <span class="dashicons dashicons-admin-appearance"></span>
             </li>
-            <li class="typography">
+            <li  class="block-settings" data-block-cb="typography" data-block-type="modal" class="typography">
                 <span class="dashicons dashicons-editor-textcolor"></span>
             </li>
             <li class="text-align">
                 <span class="dashicons dashicons-editor-alignleft"></span>
                 <ul>
-                    <li data-value="left"><span class="dashicons dashicons-editor-alignleft"></span></li>
-                    <li data-value="center"><span class="dashicons dashicons-editor-aligncenter"></span></li>
-                    <li data-value="right"><span class="dashicons dashicons-editor-alignright"></span></li>
+                    <li class="block-settings" data-block-cb="align" data-block-type="inline" data-value="left"><span class="dashicons dashicons-editor-alignleft"></span></li>
+                    <li class="block-settings" data-block-cb="align" data-block-type="inline" data-value="center"><span class="dashicons dashicons-editor-aligncenter"></span></li>
+                    <li class="block-settings" data-block-cb="align" data-block-type="inline" data-value="right"><span class="dashicons dashicons-editor-alignright"></span></li>
                 </ul>
             </li>
+            <?php do_action( 'wp_sb_more_block_settings' ); ?>
             <li class="section-move"><span class="wp-section-order dashicons dashicons-editor-code"></span></li>
         </ul>
 
@@ -28,7 +29,7 @@
 </script>
 
 
-<script id="wp-sb-section-bg" type="text/html">
+<script id="wp-sb-block-menu-bg" type="text/html">
     <div class="wp-sb-modal modal-dialog" role="document">
         <div class="modal-content">
 
@@ -78,7 +79,7 @@
 </script>
 
 
-<script id="wp-sb-section-content-box" type="text/html">
+<script id="wp-sb-block-menu-box" type="text/html">
     <div class="wp-sb-modal modal-dialog" role="document">
         <div class="modal-content">
 

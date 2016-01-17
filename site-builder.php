@@ -14,12 +14,7 @@ define( 'WP_SITE_BUILDER_PATH', trailingslashit( plugin_dir_path( __FILE__) ) );
 /*
 if ( ! current_user_can( 'customize' ) ) {
 
-    //wp_die(
-     //   '<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' .
-     //   '<p>' . __( 'You are not allowed to customize the appearance of this site.' ) . '</p>',
-     //   403
-    //);
-    //
+
 }
 */
 
@@ -39,6 +34,9 @@ function wp_sb_register_element( $section_id, $element_id, $settings ){
     $settings = wp_parse_args( $settings, array(
         'title' => $element_id,
         'priority' => '',
+        'thumb' => '',
+        'tpl' => '',
+        'js' => '',
     ) );
     global $wp_sb_sections;
     if ( ! isset( $wp_sb_sections[ $section_id ] ) ) {
@@ -83,6 +81,9 @@ if ( ! $wp_sb_fields ) {
 
 
 class WP_Site_Builder {
+
+    public $blocks = array();
+
     function __construct() {
         add_action( 'init', array( $this, 'init' ) );
     }
@@ -162,6 +163,7 @@ class WP_Site_Builder {
             }
 
 
+            wp_enqueue_script( 'site-builder-menu', WP_SITE_BUILDER_URL.'block-menu/block-menu.js', array( 'jquery' ) );
             wp_enqueue_script( 'site-builder', WP_SITE_BUILDER_URL.'assets/builder/js/builder.js', array( 'jquery' ) );
             wp_enqueue_script( 'site-builder-live-view', WP_SITE_BUILDER_URL.'assets/builder/js/live-view.js', array( 'jquery' ) );
 
@@ -183,7 +185,6 @@ class WP_Site_Builder {
         }
 
         $files =  list_files( WP_SITE_BUILDER_PATH.'fields', 1 );
-
 
         if ( $files ) {
             foreach( $files as $file ) {
@@ -211,6 +212,8 @@ class WP_Site_Builder {
 
     }
 
+
+
     function load_fields(){
         global $wp_sb_fields;
         if ( is_array( $wp_sb_fields ) ) {
@@ -224,6 +227,9 @@ class WP_Site_Builder {
                 }
             }
         }
+
+
+
     }
 
 
@@ -258,7 +264,11 @@ class WP_Site_Builder {
 
     function load_panel(){
         include WP_SITE_BUILDER_PATH.'panel/panel.php';
-        //include WP_SITE_BUILDER_PATH.'fields.php';
+        include WP_SITE_BUILDER_PATH.'block-menu/block-menu.php';
+    }
+
+    static function get_block_tpl( $file ){
+
     }
 }
 

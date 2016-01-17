@@ -7,16 +7,16 @@
     window.wp_sb_fields = window.wp_sb_fields || {};
 
     wp_sb_fields[ 'button' ]  = {
-        open:  function(   ){
+        open:  function( field  ){
             // data, element, modal, section
         },
-        change:  function(   ){
+        change:  function( field  ){
             // data, element, modal, section
 
         },
         save: function( field ){
             // data, element, modal , section
-            
+
             field.element.text( field.data.label );
             field.element.attr( 'href',  field.data.url );
             field.element.attr( 'target',  field.data.target );
@@ -30,14 +30,14 @@
             if ( typeof field.data.size !== "undefined" ) {
                 classes.push( field.data.size );
             }
-
+            
             field.element.attr( 'class', '' );
             field.element.addClass( classes.join(' ') );
+            field.control.updateData( 'fields', field.key, field.data );
 
         },
-        close: function( ){
+        close: function( field ){
             //  data, element, modal , section
-
         },
 
     };

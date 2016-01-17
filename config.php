@@ -15,8 +15,13 @@ wp_sb_register_section( 'header', array(
 wp_sb_register_element( 'header', 'header-1', array(
     'title' => __( 'Header 1', 'site-builder' ),
     'priority' => 5,
+    'thumb' => WP_SITE_BUILDER_URL.'blocks/header-1/images/thumb.jpg',
+    'tpl' => WP_SITE_BUILDER_PATH.'blocks/header-1/tpl.php',
+    'js' => WP_SITE_BUILDER_URL.'blocks/header-1/js/edit.js',
 ) );
 
+
+/*
 wp_sb_register_element( 'header', 'header-2', array(
     'title' => __( 'Header 2', 'site-builder' ),
     'priority' => 5,
@@ -43,4 +48,5 @@ wp_sb_register_section( 'videos', array(
     'title' => __( 'Videos', 'site-builder' ),
     'priority' => 5,
 ) );
+*/
 

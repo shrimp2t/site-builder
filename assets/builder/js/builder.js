@@ -10,330 +10,462 @@
 
 //--------------------------------------------
 
-var WP_PB = function( $context ){
-    var $ = jQuery;
-    var that = this;
-    that.settings = $context.attr( 'data-settings' ) || '{}';
-    that.settings =  JSON.parse( that.settings );
-    //console.log(  that );
-    that.values = { 'tag': that.settings.tag ,  'fields': {}, 'settings': {} };
+(function ( $ ) {
 
-    /**
-     * Function that loads the Mustache template
-     */
-    that.repeaterTemplate = _.memoize(function () {
-        var compiled,
-        /*
-         * Underscore's default ERB-style templates are incompatible with PHP
-         * when asp_tags is enabled, so WordPress uses Mustache-inspired templating syntax.
-         *
-         * @see trac ticket #22344.
-         */
-            options = {
-                evaluate: /<#([\s\S]+?)#>/g,
-                interpolate: /\{\{\{([\s\S]+?)\}\}\}/g,
-                escape: /\{\{([^\}]+?)\}\}(?!\})/g,
-                variable: 'data'
+    $.fn.wp_sb_block_builder = function(  ) {
+
+        return this.each( function() {
+            // Do something to each element here.
+            var $context = $( this );
+            var that = this;
+            that.settings = $context.attr( 'data-settings' ) || '{}';
+            that.settings =  JSON.parse( that.settings );
+            //console.log(  that );
+            that.values = { 'tag': that.settings.tag ,  'fields': {}, 'settings': {} };
+
+            /**
+             * Function that loads the Mustache template
+             */
+            that.repeaterTemplate = _.memoize(function () {
+                var compiled,
+                /*
+                 * Underscore's default ERB-style templates are incompatible with PHP
+                 * when asp_tags is enabled, so WordPress uses Mustache-inspired templating syntax.
+                 *
+                 * @see trac ticket #22344.
+                 */
+                    options = {
+                        evaluate: /<#([\s\S]+?)#>/g,
+                        interpolate: /\{\{\{([\s\S]+?)\}\}\}/g,
+                        escape: /\{\{([^\}]+?)\}\}(?!\})/g,
+                        variable: 'data'
+                    };
+
+                return function ( data, template_id ) {
+                    compiled = _.template( $( template_id ) .first().html(), null, options);
+                    return compiled( data );
+                };
+            });
+            that.template = that.repeaterTemplate();
+
+
+            that.updateDataInline =  function( $element, field , key ){
+                if ( field.type === 'inline' ) {
+                    that.updateData( 'fields', 'key', $element.text() );
+                }
             };
 
-        return function ( data, template_id ) {
-            compiled = _.template( $( template_id ) .first().html(), null, options);
-            return compiled( data );
-        };
-    });
+            that.updateData =  function( type, key ,value ){
+                if ( typeof that.values[ type ] == "undefined" ) {
+                    that.values[ type ] = {};
+                }
+                that.values[ type ][ key ] = value;
+                $context.attr( 'data-values', JSON.stringify( that.values ) );
+                $context.trigger( 'change' );
+            };
 
-    that.template = that.repeaterTemplate();
+            that.getValue = function( type , key ) {
+                that.values = $context.attr( 'data-values' ) || '{}';
+                that.values = JSON.parse( that.values );
 
-
-    that.updateData =  function( $element, field , key ){
-
-        if ( field.type === 'inline' ) {
-            that.values['fields'][ key ] = $element.text();
-            $context.attr( 'data-values', JSON.stringify( that.values ) );
-            $context.trigger( 'change' );
-        }
-
-    };
-
-    that.updateDataKey =  function( $element, key ,value ){
-        that.values['fields'][ key ] = value;
-        $context.attr( 'data-values', JSON.stringify( that.values ) );
-        $context.trigger( 'change' );
-    };
+                if ( typeof that.values[ type ] !== "undefined" ) {
+                    if ( typeof that.values[ type ][ key ] !== "undefined" ) {
+                        return that.values[ type ][ key ];
+                    }
+                }
+                return false;
+            };
 
 
-    that.updateDataSettings =  function( key ,value ){
-        that.values['settings'][ key ] = value;
-        $context.attr( 'data-values', JSON.stringify( that.values ) );
-        $context.trigger( 'change' );
-    };
+            that.field_settings = function(){
+
+                if( typeof that.settings.fields !== "undefined" ){
+                    _.each( that.settings.fields, function( field, key ){
+                        //console.log( field );
+                        var element =  $( '[data-content="'+key+'"]', $context );
+
+                        switch ( field.type ) {
+                            case 'inline':
+
+                                element.on( 'click', function( e ){
+                                    e.preventDefault();
+                                    element.attr( 'contenteditable', 'true' );
+                                } );
+
+                                element.on( 'blur keyup', function( e ){
+                                    e.preventDefault();
+                                    that.updateDataInline( element, field, key );
+                                } );
+                                break;
+                            default :
+                                element.on( 'click', function( e ){
+                                    e.preventDefault();
+                                    if ( element.attr( 'data-open-modal' ) !== 'y' ) {
+                                        data_default = element.attr( 'data-default' ) || '{}';
+                                        data_default = JSON.parse( data_default );
+                                        data_default['label']  = element.text();
+                                        data_default['target'] = element.attr( 'target' ) || '';
+                                        data_default['url'] = element.attr( 'href' ) || '#';
+                                        that.element_modal( element , field, key, data_default  );
+                                    }
+
+                                } );
+
+                                break;
+                        }
+
+                    } );
+                }
+
+            };
+
+
+            that.element_modal = function( element, field, key, default_values ){
+
+                var data =  that.values['fields'][ key ];
+                if (  typeof data === "undefined" ) {
+                    data = default_values;
+                }
+
+                var html = {};
+
+                if ( $( '#wp-sb-field-'+field.type+'-tpl' ).length > 0 ) {
+                    html = $( '#wp-sb-field-'+field.type+'-tpl').html();
+                }
+
+                $( 'body' ).wp_sb_modal( {
+                    data: data,
+                    template: html, // HTML/Underscore template
+                    append_to: ".wp-sb-builder-area",
+                    wrap: ".wp-sb-builder-content-wrap",
+                    change_trigger: "wp_sb_section_bg_change",
+                    save_trigger: "wp_sb_modal_content_save",
+                    open_cb: function( data, modal ) {
+
+                        if ( typeof window.wp_sb_fields[ field.type ] !== "undefined" ) {
+                            if( typeof window.wp_sb_fields[ field.type].open ==="function" ) {
+                                window.wp_sb_fields[ field.type].open( {
+                                    data: data,
+                                    key: key,
+                                    element: element,
+                                    modal: modal,
+                                    section: $context,
+                                    control: that,
+                                } );
+                            }
+                        }
+
+                    },
+                    change_cb: function( data, modal ) {
+
+                        if ( typeof window.wp_sb_fields[ field.type ] !== "undefined" ) {
+                            if( typeof window.wp_sb_fields[ field.type].change ==="function" ) {
+                                window.wp_sb_fields[ field.type].change( {
+                                    data: data,
+                                    key: key,
+                                    element: element,
+                                    modal: modal,
+                                    section: $context,
+                                    control: that,
+                                } );
+                            }
+                        }
+                    },
+                    save_cb: function( data, modal ){
+
+                        if ( typeof window.wp_sb_fields[ field.type ] !== "undefined" ) {
+                            if( typeof window.wp_sb_fields[ field.type ].save === "function" ) {
+                                window.wp_sb_fields[ field.type ].save( {
+                                    data: data,
+                                    key: key,
+                                    element: element,
+                                    modal: modal,
+                                    section: $context,
+                                    control: that,
+                                } );
+                            }
+                        }
+
+                    },
+                    close_cb: function( modal ){
+
+                        if ( typeof window.wp_sb_fields[ field.type ] !== "undefined" ) {
+                            if( typeof window.wp_sb_fields[ field.type].open ==="function" ) {
+                                window.wp_sb_fields[ field.type].open( {
+                                    data: data,
+                                    key: key,
+                                    element: element,
+                                    modal: modal,
+                                    section: $context,
+                                    control: that,
+                                } );
+                            }
+                        }
+
+                    },
+                } );
+
+
+            };
+
+            //Add section block settings
+            $context.append( $( '#wp-sb-section-edit-menu').html() );
+            $context.on( 'click', function(){
+                $( '.wp-sb-builder-area .section').removeClass( 'section-editing' );
+                $context.addClass( 'section-editing' );
+            } );
+
+
+            // When settings click
+
+            $context.on( 'click', '.wp-sb-section-edit .block-settings' ,function( e ) {
+                e.preventDefault();
+                var _type = $( this).attr( 'data-block-type' ) || '';
+                var _cb = $( this).attr( 'data-block-cb' ) || '';
+                var element = $( this );
+
+                var data =   that.getValue( 'settings', _cb ) ;
+                if (  typeof data === "undefined" ) {
+                    data = that.settings.settings[ _type ];
+                }
 
 
 
+                var cb = false;
+                if ( _cb === '' ) {
+                    return ;
+                }
 
-    that.field_settings = function(){
+                if ( typeof window.wp_sb_block_fields[ _cb ] !== "undefined" ) {
+                    cb = window.wp_sb_block_fields[ _cb ];
+                }
 
-        if( typeof that.settings.fields !== "undefined" ){
-            _.each( that.settings.fields, function( field, key ){
-                //console.log( field );
-                var element =  $( '[data-content="'+key+'"]', $context );
+                if ( _type === 'modal' ) {
+                    $( 'body' ).wp_sb_modal( {
+                        data: data,
+                        template: $( '#wp-sb-block-menu-'+_cb ).html(), // HTML/Underscore template
+                        append_to: ".wp-sb-builder-area",
+                        wrap: ".wp-sb-builder-content-wrap",
+                        change_trigger: "wp_sb_section_bg_change",
+                        save_trigger: "wp_sb_modal_content_save",
+                        open_cb: function( data, modal ) {
+                            if ( typeof cb.open !== "undefined" ) {
+                                cb.open( {
+                                    data: data,
+                                    modal: modal,
+                                    element: element,
+                                    section: $context,
+                                    control: that,
+                                } );
+                            }
+                        },
+                        change_cb: function( data, modal ) {
 
-                switch ( field.type ) {
-                    case 'inline':
-
-                            element.on( 'click', function( e ){
-                                e.preventDefault();
-                                element.attr( 'contenteditable', 'true' );
-                            } );
-
-                            element.on( 'blur keyup', function( e ){
-                                e.preventDefault();
-                                that.updateData( element, field, key );
-                            } );
-                        break;
-                    case 'button':
-                        element.on( 'click', function( e ){
-                            e.preventDefault();
-                            if ( element.attr( 'data-open-modal' ) !== 'y' ) {
-                                data_default = element.attr( 'data-default' ) || '{}';
-                                data_default = JSON.parse( data_default );
-                                data_default['label']  = element.text();
-                                data_default['target'] = element.attr( 'target' ) || '';
-                                data_default['url'] = element.attr( 'href' ) || '#';
-                                that.element_modal( element , field, key, data_default  );
+                            if ( typeof cb.change !== "undefined" ) {
+                                cb.change( {
+                                    data: data,
+                                    modal: modal,
+                                    element: element,
+                                    section: $context,
+                                    control: that,
+                                } );
                             }
 
+                        },
+                        save_cb: function( data, modal ){
+                            if ( typeof cb.save !== "undefined" ) {
+                                cb.save( {
+                                    data: data,
+                                    modal: modal,
+                                    element: element,
+                                    section: $context,
+                                    control: that,
+                                } );
+                            }
+                        },
+                        close_cb: function( modal ){
+                            if ( typeof cb.close !== "undefined" ) {
+                                cb.save( {
+                                    modal: modal,
+                                    element: element,
+                                    section: $context,
+                                    control: that,
+                                } );
+                            }
+                        },
+                    } );
+                } else {
+                    if ( typeof cb === "function" ) {
+                        cb({
+                            data: data,
+                            element: element,
+                            section: $context,
+                            control: that,
                         } );
-
-                        break;
+                    }
                 }
+
 
             } );
-        }
+
+
+
+            /*
+            $context.on( 'click', '.wp-sb-section-edit .bg' ,function( e ) {
+                e.preventDefault();
+
+                var data =  that.values['settings']['bg'];
+                if (  typeof data === "undefined" ) {
+                    data = that.settings.settings.bg;
+                }
+
+                $( 'body' ).wp_sb_modal( {
+                    data: data,
+                    template: $( '#wp-sb-section-bg').html(), // HTML/Underscore template
+                    append_to: ".wp-sb-builder-area",
+                    wrap: ".wp-sb-builder-content-wrap",
+                    change_trigger: "wp_sb_section_bg_change",
+                    save_trigger: "wp_sb_modal_content_save",
+                    change_cb: function( data , _modal ) {
+                        $context.css( { 'background-color': data.bg_color , 'background-image': 'url("'+data.img_url+'")' } );
+                    },
+                    save_cb: function(){ },
+                    close_cb: function(){ },
+                } );
+
+            } );
+
+
+            // When Content box change
+            $context.on( 'click', '.wp-sb-section-edit .box' ,function( e ) {
+                e.preventDefault();
+                var data =  that.values['settings']['content_box'];
+                if (  typeof data === "undefined" ) {
+                    data = that.settings.settings.content_box;
+                }
+
+                $( 'body' ).wp_sb_modal( {
+                    data: data,
+                    template: $( '#wp-sb-section-content-box').html(), // HTML/Underscore template
+                    append_to: ".wp-sb-builder-area",
+                    wrap: ".wp-sb-builder-content-wrap",
+                    change_trigger: "wp_sb_section_content_box_change",
+                    save_trigger: "wp_sb_modal_content_save",
+                    change_cb: function() { },
+                    save_cb: function(){ },
+                    close_cb: function(){ },
+                } );
+
+            } );
+
+            // When click to text align icon
+            $context.on( 'click', '.wp-sb-section-edit .text-align li' ,function( e ) {
+                e.preventDefault();
+                var value = $( this ).attr( 'data-value' );
+                that.updateDataSettings( 'align', value );
+                $context.css( { 'text-align': value } );
+            });
+            */
+
+            that.field_settings();
+
+
+
+            return this;
+
+        });
 
     };
 
+}( jQuery ));
 
-
-    that.element_modal = function( element, field, key, default_values ){
-
-        var data =  that.values['fields'][ key ];
-        if (  typeof data === "undefined" ) {
-            data = default_values;
-        }
-
-        var html = {};
-
-        if ( $( '#wp-sb-field-'+field.type+'-tpl' ).length > 0 ) {
-            html = $( '#wp-sb-field-'+field.type+'-tpl').html();
-        }
-
-        $( 'body' ).wp_sb_modal( {
-            data: data,
-            template: html, // HTML/Underscore template
-            append_to: ".wp-sb-builder-area",
-            wrap: ".wp-sb-builder-content-wrap",
-            change_trigger: "wp_sb_section_bg_change",
-            save_trigger: "wp_sb_modal_content_save",
-            open_cb: function( data, modal ) {
-
-                if ( typeof window.wp_sb_fields[ field.type ] !== "undefined" ) {
-                    if( typeof window.wp_sb_fields[ field.type].open ==="function" ) {
-                        window.wp_sb_fields[ field.type].open( {
-                            data: data,
-                            element: element,
-                            modal: modal,
-                            section: $context,
-                        } );
-                    }
-                }
-
-            },
-            change_cb: function( data, modal ) {
-
-                if ( typeof window.wp_sb_fields[ field.type ] !== "undefined" ) {
-                    if( typeof window.wp_sb_fields[ field.type].change ==="function" ) {
-                        window.wp_sb_fields[ field.type].change( {
-                            data: data,
-                            element: element,
-                            modal: modal,
-                            section: $context,
-                        } );
-                    }
-                }
-
-            },
-            save_cb: function( data, modal ){
-
-                if ( typeof window.wp_sb_fields[ field.type ] !== "undefined" ) {
-                    if( typeof window.wp_sb_fields[ field.type ].save === "function" ) {
-                        window.wp_sb_fields[ field.type ].save( {
-                            data: data,
-                            element: element,
-                            modal: modal,
-                            section: $context,
-                        } );
-                    }
-                }
-
-                /*
-                if ( field.type === 'button' ) {
-                    element.text( data.label );
-                    element.attr( 'href',  data.url );
-                    element.attr( 'target',  data.target );
-
-                    var classes = [ 'btn' ];
-
-                    if ( typeof data.button_style !== "undefined" ) {
-                        classes.push( data.button_style );
-                    }
-
-                    if ( typeof data.size !== "undefined" ) {
-                        classes.push( data.size );
-                    }
-                    element.attr( 'class', '' );
-                    element.addClass( classes.join(' ') );
-                }
-                */
-
-            },
-            close_cb: function( modal ){
-
-                if ( typeof window.wp_sb_fields[ field.type ] !== "undefined" ) {
-                    if( typeof window.wp_sb_fields[ field.type].open ==="function" ) {
-                        window.wp_sb_fields[ field.type].open( {
-                            data: data,
-                            element: element,
-                            modal: modal,
-                            section: $context,
-                        } );
-                    }
-                }
-
-            },
-        } );
-
-
-    };
-
-    that.when_focus = function(){
-        $context.append( $( '#wp-sb-section-edit-menu').html() );
-        $context.on( 'click', function(){
-            $( '.wp-sb-builder-area .section').removeClass( 'section-editing' );
-            $context.addClass( 'section-editing' );
-        } );
-    };
-
-
-    // When settings bg
-    $context.on( 'click', '.wp-sb-section-edit .bg' ,function( e ) {
-        e.preventDefault();
-
-        var data =  that.values['settings']['bg'];
-        if (  typeof data === "undefined" ) {
-            data = that.settings.settings.bg;
-        }
-
-        $( 'body' ).wp_sb_modal( {
-            data: data,
-            template: $( '#wp-sb-section-bg').html(), // HTML/Underscore template
-            append_to: ".wp-sb-builder-area",
-            wrap: ".wp-sb-builder-content-wrap",
-            change_trigger: "wp_sb_section_bg_change",
-            save_trigger: "wp_sb_modal_content_save",
-            change_cb: function( data , _modal ) {
-                $context.css( { 'background-color': data.bg_color , 'background-image': 'url("'+data.img_url+'")' } );
-            },
-            save_cb: function(){ },
-            close_cb: function(){ },
-        } );
-
-    } );
-
-
-    // When Content box change
-    $context.on( 'click', '.wp-sb-section-edit .box' ,function( e ) {
-        e.preventDefault();
-        var data =  that.values['settings']['content_box'];
-        if (  typeof data === "undefined" ) {
-            data = that.settings.settings.content_box;
-        }
-
-        $( 'body' ).wp_sb_modal( {
-            data: data,
-            template: $( '#wp-sb-section-content-box').html(), // HTML/Underscore template
-            append_to: ".wp-sb-builder-area",
-            wrap: ".wp-sb-builder-content-wrap",
-            change_trigger: "wp_sb_section_content_box_change",
-            save_trigger: "wp_sb_modal_content_save",
-            change_cb: function() { },
-            save_cb: function(){ },
-            close_cb: function(){ },
-        } );
-
-    } );
-
-    // When click to text align icon
-    $context.on( 'click', '.wp-sb-section-edit .text-align li' ,function( e ) {
-        e.preventDefault();
-        var value = $( this ).attr( 'data-value' );
-        that.updateDataSettings( 'align', value );
-        $( window ).trigger( 'wp_sb_section_align_change', [ value, $context, 'align' ] );
-    });
-
-
-
-
-    that.field_settings();
-    that.when_focus();
-
-};
 
 
 //--------------------------------------------
+
+(function ( $ ) {
+
+    $.fn.wp_sb_builder = function( options ) {
+
+        options = $.extend({
+            value_field: "#wb-sb-template-content",
+            containment: ".wp-sb-builder-content-wrap",
+        }, options );
+
+
+        var value_field, area;
+        if ( typeof options.value_field !== "object" ){
+            value_field = $( options.value_field );
+        } else {
+            value_field = options.value_field;
+        }
+
+
+        return this.each( function() {
+
+            area =  $( this );
+
+            function update_builder_data(){
+                var data = {};
+                $( '.section', area ).each( function( index ){
+                    var _data = $( this).attr( 'data-values' ) || '{}';
+                    data[ index ] = JSON.parse( _data );
+                } );
+                value_field.val( JSON.stringify( data ) );
+            }
+
+            $( '.section', area ).each( function(){
+                $( this).wp_sb_block_builder();
+                $( this ).bind( 'change', function(){
+                    update_builder_data();
+                } );
+            } );
+
+            area.bind( 'change', function(){
+                update_builder_data();
+            } );
+
+
+            area.sortable({
+                //placeholder: "section-placeholder",
+                containment: options.containment,
+                //handle: ".handle",
+                //helper: "clone",
+                change: function( event, ui ) {
+                    update_builder_data();
+                },
+                handle: '.wp-section-order'
+            });
+
+            return this;
+
+        } );
+    };
+
+}( jQuery ));
 
 
 
 
 jQuery( document ).ready( function( $ ){
 
-    function update_builder_data(){
-        var data = {};
-        $( '.wp-sb-builder-area .section').each( function( index ){
-            var _data = $( this).attr( 'data-values' ) || '{}';
-            data[ index ] = JSON.parse( _data );
-        } );
-        $( '#wb-sb-template-content').val( JSON.stringify( data ) );
-    }
 
-    //---------------
-    $( '.wp-sb-builder-area .section').each( function(){
-        new WP_PB( $( this ) );
-        $( this ).bind( 'change', function(){
-            update_builder_data();
-        } );
+    $( '.wp-sb-builder-area' ).wp_sb_builder();
+
+    // Add elemnt
+    $( '.wp-sb-element').on( 'click', function( e ){
+        e.preventDefault();
+        var el_id =  $( this).attr( 'data-el-id' ) || '';
+        var section = {};
+        if ( el_id !== '' ){
+            section = $( $( '#wp_sb_tpl_block_'+el_id).html() );
+        }
+
+        $( '.wp-sb-builder-area').append( section );
+        section.wp_sb_block_builder();
+        $( '.wp-sb-builder-area').trigger( 'change' );
+
     } );
-
-    $( '.wp-sb-builder-area' ).bind( 'change', function(){
-        update_builder_data();
-    } );
-
-
-    $( '.wp-sb-builder-area').sortable({
-        //placeholder: "section-placeholder",
-        containment: $( '.wp-sb-builder-content-wrap'),
-        //handle: ".handle",
-        //helper: "clone",
-        change: function( event, ui ) {
-            update_builder_data();
-        },
-        handle: '.wp-section-order'
-    });
-
-    //---------------
-
-
-
 
 
 
