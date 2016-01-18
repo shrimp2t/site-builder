@@ -34,20 +34,16 @@ $settings = array(
             'color' => '',
         ),
         'align' => 'left',
-
     )
-
 );
 
 ?>
-
-<div class="section" data-settings="<?php echo esc_attr( json_encode( $settings ) ); ?>">
+<div class="section"<?php wp_sb_editing_section(  $settings  ); ?>>
 
     <div class="container">
-        <h1  data-content="title">Hello, world!</h1>
-        <p  data-content="title">This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-        <p><a data-default="<?php echo esc_attr( json_encode( array( 'button_style' =>'btn-primary', 'size'=>'btn-lg' ) ) ); ?>" data-content="button" href="#" class="btn btn-primary btn-lg">Learn more »</a></p>
+        <h1<?php wp_sb_editing_field( 'title' ); ?>>Hello, world!</h1>
+        <p<?php wp_sb_editing_field( 'title' ); ?>>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+        <p><a<?php wp_sb_editing_field( 'button', array( 'button_style' =>'btn-primary', 'size'=>'btn-lg' ) ); ?> href="#" class="btn btn-primary btn-lg">Learn more »</a></p>
     </div>
-
 
 </div>

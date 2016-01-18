@@ -69,14 +69,50 @@ function wp_sb_register_section( $section_id, $settings ){
 
 
 
-
-
-
 global $wp_sb_fields ;
 if ( ! $wp_sb_fields ) {
     $wp_sb_fields =  array();
 }
 
+
+function wp_sb_editing_attr( $key, $args = array(), $echo = true ){
+    if( ! defined( 'WP_SB_EDITING' ) || WP_SB_EDITING != 1 ) {
+        return ;
+    }
+
+    if ( is_array( $args ) || is_object( $args ) ){
+        $_string_attr = json_encode( $args );
+    } else {
+        $_string_attr = $args;
+    }
+
+    if ( $echo ) {
+        echo " data-{$key}=\"".esc_attr( $_string_attr )."\" ";
+    } else {
+        return " data-{$key}=\"".esc_attr( $_string_attr )."\" ";
+    }
+}
+
+function wp_sb_editing_field( $field_id, $default_data = array(),  $echo = true ){
+    if ( $echo ) {
+        wp_sb_editing_attr( 'content', $field_id, true );
+        if ( ! empty ( $default_data ) && $default_data !== '' ){
+            wp_sb_editing_attr( 'default', $default_data, true );
+        }
+        return ;
+    } else {
+       $attr =  wp_sb_editing_attr( 'content', $field_id, false );
+        if ( ! empty ( $default_data ) && $default_data !== '' ){
+            $attr .= wp_sb_editing_attr( 'default', $default_data, false );
+        }
+        return $attr;
+    }
+}
+
+
+function wp_sb_editing_section( $settings, $echo = true ){
+    return wp_sb_editing_attr( 'settings', $settings, $echo );
+}
 
 
 
@@ -91,6 +127,7 @@ class WP_Site_Builder {
     public function init(){
         if ( isset( $_GET['site_builder'] ) && $_GET['site_builder'] == 1 ) {
             add_action( 'template_include', array( $this, 'load_site_builder' ) );
+            define( 'WP_SB_EDITING', 1 );
 
             remove_all_actions('wp_head');
             remove_all_actions('wp_footer');
@@ -147,8 +184,8 @@ class WP_Site_Builder {
                 'defaultString' => __( 'Default' ),
                 'pick' => __( 'Select Color' )
             );
-            wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', $colorpicker_l10n );
 
+            wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', $colorpicker_l10n );
             wp_enqueue_script( 'site-builder-fields', WP_SITE_BUILDER_URL.'assets/builder/js/fields.js', array( 'jquery' ) );
 
 

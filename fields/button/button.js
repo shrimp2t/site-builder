@@ -30,9 +30,11 @@
             if ( typeof field.data.size !== "undefined" ) {
                 classes.push( field.data.size );
             }
-            
+
             field.element.attr( 'class', '' );
             field.element.addClass( classes.join(' ') );
+
+            // Update data
             field.control.updateData( 'fields', field.key, field.data );
 
         },

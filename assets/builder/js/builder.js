@@ -41,13 +41,12 @@
                         variable: 'data'
                     };
 
-                return function ( data, template_id ) {
-                    compiled = _.template( $( template_id ) .first().html(), null, options);
+                return function ( data, html ) {
+                    compiled = _.template( html, null, options);
                     return compiled( data );
                 };
             });
             that.template = that.repeaterTemplate();
-
 
             that.updateDataInline =  function( $element, field , key ){
                 if ( field.type === 'inline' ) {
@@ -205,19 +204,16 @@
                     },
                 } );
 
-
             };
 
             //Add section block settings
-            $context.append( $( '#wp-sb-section-edit-menu').html() );
+            $context.append( that.template( that.settings.settings, $( '#wp-sb-section-edit-menu').html()  ));
             $context.on( 'click', function(){
                 $( '.wp-sb-builder-area .section').removeClass( 'section-editing' );
                 $context.addClass( 'section-editing' );
             } );
 
-
             // When settings click
-
             $context.on( 'click', '.wp-sb-section-edit .block-settings' ,function( e ) {
                 e.preventDefault();
                 var _type = $( this).attr( 'data-block-type' ) || '';
@@ -228,7 +224,6 @@
                 if (  typeof data === "undefined" ) {
                     data = that.settings.settings[ _type ];
                 }
-
 
 
                 var cb = false;
@@ -305,70 +300,10 @@
                     }
                 }
 
-
             } );
 
-
-
-            /*
-            $context.on( 'click', '.wp-sb-section-edit .bg' ,function( e ) {
-                e.preventDefault();
-
-                var data =  that.values['settings']['bg'];
-                if (  typeof data === "undefined" ) {
-                    data = that.settings.settings.bg;
-                }
-
-                $( 'body' ).wp_sb_modal( {
-                    data: data,
-                    template: $( '#wp-sb-section-bg').html(), // HTML/Underscore template
-                    append_to: ".wp-sb-builder-area",
-                    wrap: ".wp-sb-builder-content-wrap",
-                    change_trigger: "wp_sb_section_bg_change",
-                    save_trigger: "wp_sb_modal_content_save",
-                    change_cb: function( data , _modal ) {
-                        $context.css( { 'background-color': data.bg_color , 'background-image': 'url("'+data.img_url+'")' } );
-                    },
-                    save_cb: function(){ },
-                    close_cb: function(){ },
-                } );
-
-            } );
-
-
-            // When Content box change
-            $context.on( 'click', '.wp-sb-section-edit .box' ,function( e ) {
-                e.preventDefault();
-                var data =  that.values['settings']['content_box'];
-                if (  typeof data === "undefined" ) {
-                    data = that.settings.settings.content_box;
-                }
-
-                $( 'body' ).wp_sb_modal( {
-                    data: data,
-                    template: $( '#wp-sb-section-content-box').html(), // HTML/Underscore template
-                    append_to: ".wp-sb-builder-area",
-                    wrap: ".wp-sb-builder-content-wrap",
-                    change_trigger: "wp_sb_section_content_box_change",
-                    save_trigger: "wp_sb_modal_content_save",
-                    change_cb: function() { },
-                    save_cb: function(){ },
-                    close_cb: function(){ },
-                } );
-
-            } );
-
-            // When click to text align icon
-            $context.on( 'click', '.wp-sb-section-edit .text-align li' ,function( e ) {
-                e.preventDefault();
-                var value = $( this ).attr( 'data-value' );
-                that.updateDataSettings( 'align', value );
-                $context.css( { 'text-align': value } );
-            });
-            */
-
+            
             that.field_settings();
-
 
 
             return this;
@@ -415,7 +350,7 @@
             }
 
             $( '.section', area ).each( function(){
-                $( this).wp_sb_block_builder();
+                $( this).wp_sb_block_builder(  );
                 $( this ).bind( 'change', function(){
                     update_builder_data();
                 } );
@@ -423,6 +358,13 @@
 
             area.bind( 'change', function(){
                 update_builder_data();
+            } );
+
+            // when remove section
+            area.on( 'click', '.section .remove-section', function( e ){
+                e.preventDefault();
+                $( this).parents( '.section').remove();
+                area.trigger( 'change' );
             } );
 
 
@@ -486,7 +428,7 @@ jQuery( document ).ready( function( $ ){
             section.addClass( 'open' );
             panel.toggleClass( 's-open' );
             var h = $( '.wp-sb-actions').height() + $( '.wp-sb-e-section-title').height();
-            $( '.wp-sb-elements-wrap', section).height( $( window).height() - h );
+            $( '.wp-sb-elements-wrap', section ).height( $( window).height() - h );
 
             setTimeout( function(){
                 panel.removeAttr( 'style' );

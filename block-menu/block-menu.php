@@ -1,18 +1,30 @@
 <script id="wp-sb-section-edit-menu" type="text/html">
     <div class="wp-sb-section-edit">
+        <# console.log( data ); #>
         <ul>
             <li class="remove-section">
                 <span class="dashicons dashicons-trash"></span>
             </li>
+
+            <# if ( typeof data.bg !== "undefined"  ){ #>
             <li class="block-settings" data-block-cb="bg" data-block-type="modal">
                 <span class="dashicons dashicons-format-image"></span>
             </li>
+            <# } #>
+
+            <# if ( typeof data.bg !== "box"  ){ #>
             <li  class="block-settings" data-block-cb="box" data-block-type="modal">
                 <span class="dashicons dashicons-admin-appearance"></span>
             </li>
+            <# } #>
+
+            <# if ( typeof data.bg !== "typography"  ){ #>
             <li  class="block-settings" data-block-cb="typography" data-block-type="modal" class="typography">
                 <span class="dashicons dashicons-editor-textcolor"></span>
             </li>
+            <# } #>
+
+            <# if ( typeof data.align !== "undefined"  ){ #>
             <li class="text-align">
                 <span class="dashicons dashicons-editor-alignleft"></span>
                 <ul>
@@ -21,6 +33,8 @@
                     <li class="block-settings" data-block-cb="align" data-block-type="inline" data-value="right"><span class="dashicons dashicons-editor-alignright"></span></li>
                 </ul>
             </li>
+            <# } #>
+
             <?php do_action( 'wp_sb_more_block_settings' ); ?>
             <li class="section-move"><span class="wp-section-order dashicons dashicons-editor-code"></span></li>
         </ul>
