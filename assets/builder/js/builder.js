@@ -302,7 +302,7 @@
 
             } );
 
-            
+
             that.field_settings();
 
 
@@ -409,8 +409,6 @@ jQuery( document ).ready( function( $ ){
 
     } );
 
-
-
     var panel = $( '.wp-sb-panel');
 
     $( '.wp-sb-collapse-sidebar').on( 'click', function( e ){
@@ -448,5 +446,28 @@ jQuery( document ).ready( function( $ ){
         });
 
     } );
+
+
+    // When save
+    $( '.wp-sb-save').on( 'click', function( e ){
+        e.preventDefault();
+
+        var data = {
+            'action': 'wp_save_site_builder',
+            'builder_content': $( '#wb-sb-template-content').val()
+        };
+
+        $.ajax( {
+            url: wpSiteBuilder.ajax_url,
+            data: data,
+            type: 'post',
+            success: function(){
+
+            }
+        } );
+
+
+    } );
+
 
 } );

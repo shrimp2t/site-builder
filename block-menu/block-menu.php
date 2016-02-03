@@ -1,6 +1,6 @@
 <script id="wp-sb-section-edit-menu" type="text/html">
     <div class="wp-sb-section-edit">
-        <# console.log( data ); #>
+
         <ul>
             <li class="remove-section">
                 <span class="dashicons dashicons-trash"></span>

@@ -18,7 +18,7 @@ if ( ! current_user_can( 'customize' ) ) {
 }
 */
 
-global $wp_sb_sections;
+global $wp_sb_sections, $wp_sb_elements;
 
 /**
  *
@@ -38,12 +38,13 @@ function wp_sb_register_element( $section_id, $element_id, $settings ){
         'tpl' => '',
         'js' => '',
     ) );
-    global $wp_sb_sections;
+    global $wp_sb_sections, $wp_sb_elements;
     if ( ! isset( $wp_sb_sections[ $section_id ] ) ) {
         wp_sb_register_section( $section_id, array() );
     }
 
     $wp_sb_sections[ $section_id ][ 'elements' ][ $element_id ] =  $settings;
+    $wp_sb_elements[ $element_id ] = $settings;
 
 }
 
@@ -109,10 +110,30 @@ function wp_sb_editing_field( $field_id, $default_data = array(),  $echo = true 
     }
 }
 
-
 function wp_sb_editing_section( $settings, $echo = true ){
     return wp_sb_editing_attr( 'settings', $settings, $echo );
 }
+
+
+function wp_get_setting_field( $settings,  $field, $default = array() ){
+    if ( ! is_array( $settings ) ) {
+        return  $default;
+    }
+
+    if ( isset( $settings['fields'] ) ) {
+        if ( isset( $settings['fields'][ $field ] ) ) {
+            $v = $settings['fields'][ $field ];
+            if ( is_string( $v ) && !empty( $v ) ){
+                return $v;
+            } else {
+                return wp_parse_args( $settings['fields'][ $field ], $default );
+            }
+        }
+    }
+
+    return $default;
+}
+
 
 
 
@@ -122,6 +143,14 @@ class WP_Site_Builder {
 
     function __construct() {
         add_action( 'init', array( $this, 'init' ) );
+        add_action( 'wp_ajax_wp_save_site_builder', array( $this, 'save' ) );
+    }
+
+    function save(){
+        $data =  $_POST['builder_content'];
+        $data = stripslashes_deep( $data );
+        update_option( 'site_builder', json_decode( $data, true ) );
+        die( 'site_builder_saved' );
     }
 
     public function init(){
@@ -187,6 +216,11 @@ class WP_Site_Builder {
 
             wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', $colorpicker_l10n );
             wp_enqueue_script( 'site-builder-fields', WP_SITE_BUILDER_URL.'assets/builder/js/fields.js', array( 'jquery' ) );
+
+
+            wp_localize_script( 'jquery', 'wpSiteBuilder', array(
+                'ajax_url' => admin_url( 'admin-ajax.php' ),
+            ) );
 
 
             global $wp_sb_fields;

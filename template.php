@@ -16,6 +16,27 @@
     <div class="wp-sb-builder-area">
         <?php
 
+        $data_blocks = get_option( 'site_builder' );
+        var_dump( $data_blocks );
+        global $wp_sb_elements;
+
+        if ( is_array( $data_blocks ) && ! empty( $data_blocks ) ) {
+            foreach ( $data_blocks as $block ) {
+                if ( isset( $block['tag'] ) ) {
+                    if ( isset ( $wp_sb_elements[ $block['tag'] ] ) ) {
+                        if ( file_exists( $wp_sb_elements[ $block['tag'] ]['tpl'] ) ) {
+                            $GLOBALS['section_values'] =  $block['tag']['fields'];
+                            $GLOBALS['section_settings'] =  $block['tag']['settings'];
+                            include $wp_sb_elements[ $block['tag'] ]['tpl'];
+                        }
+
+                    }
+                }
+
+            }
+        }
+
+        /*
         $settings = array(
             'tag' => 'header-1',
             'fields' => array(
@@ -92,7 +113,7 @@
             </div>
 
         </div>
-
+        */ ?>
 
 
 
