@@ -6,7 +6,7 @@ $categories = array(
     'videos'  =>__( 'Video', 'site-builder' ),
     'team'    =>__( 'Team', 'site-builder' ),
 );
-global $wp_sb_sections;
+global $wp_sb_sections, $wp_sb_elements;
 
 ?>
 <input  type="hidden" id="wb-sb-template-content">
@@ -37,7 +37,19 @@ global $wp_sb_sections;
                                     <img src="<?php echo esc_url( $el['thumb'] ); ?>" alt="">
                                     <?php } ?>
 
-                                    <?php echo esc_html( $el['title'] ); ?>
+                                    <?php
+                                    echo esc_html( $el['title'] );
+
+                                    $GLOBALS['current_section']  =  $wp_sb_elements[ $el_id ];
+                                    $GLOBALS['section_values']   =  array();
+                                    $GLOBALS['section_settings'] =  array();
+
+                                    wp_sb_setup_section_data( array(
+                                            'fields' => $wp_sb_elements[ $el_id ]['fields'],
+                                            'settings' => $wp_sb_elements[ $el_id ]['settings'] )
+                                    );
+
+                                    ?>
                                     <script id="<?php echo esc_attr( 'wp_sb_tpl_block_'.$el_id ); ?>" type="text/html">
                                         <?php
                                             if ( file_exists( $el['tpl'] ) ) {

@@ -50,7 +50,7 @@
 
             that.updateDataInline =  function( $element, field , key ){
                 if ( field.type === 'inline' ) {
-                    that.updateData( 'fields', 'key', $element.text() );
+                    that.updateData( 'fields', key, $element.text() );
                 }
             };
 
@@ -75,12 +75,13 @@
                 return false;
             };
 
-
             that.field_settings = function(){
 
                 if( typeof that.settings.fields !== "undefined" ){
                     _.each( that.settings.fields, function( field, key ){
-                        //console.log( field );
+                        console.log( field );
+                        console.log( key );
+                        console.log( '----' );
                         var element =  $( '[data-content="'+key+'"]', $context );
 
                         switch ( field.type ) {
@@ -107,7 +108,6 @@
                                         data_default['url'] = element.attr( 'href' ) || '#';
                                         that.element_modal( element , field, key, data_default  );
                                     }
-
                                 } );
 
                                 break;
@@ -222,9 +222,8 @@
 
                 var data =   that.getValue( 'settings', _cb ) ;
                 if (  typeof data === "undefined" ) {
-                    data = that.settings.settings[ _type ];
+                    data = that.settings.settings[ _type ] || {};
                 }
-
 
                 var cb = false;
                 if ( _cb === '' ) {

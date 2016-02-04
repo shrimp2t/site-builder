@@ -13,16 +13,17 @@ define( 'WP_SITE_BUILDER_PATH', trailingslashit( plugin_dir_path( __FILE__) ) );
 
 /*
 if ( ! current_user_can( 'customize' ) ) {
-
-
 }
 */
 
-global $wp_sb_sections, $wp_sb_elements;
+global $wp_sb_sections, $wp_sb_fields, $wp_sb_elements;
+if ( ! $wp_sb_fields ) {
+    $wp_sb_fields =  array();
+}
 
 /**
+ * Priority
  *
- * priority
  * @param $section_id
  * @param $element_id
  * @param $settings
@@ -32,11 +33,14 @@ function wp_sb_register_element( $section_id, $element_id, $settings ){
         $settings = array();
     }
     $settings = wp_parse_args( $settings, array(
+        'tag'    => $element_id,
         'title' => $element_id,
         'priority' => '',
         'thumb' => '',
         'tpl' => '',
         'js' => '',
+        'fields' => array(),
+        'settings' => array(),
     ) );
     global $wp_sb_sections, $wp_sb_elements;
     if ( ! isset( $wp_sb_sections[ $section_id ] ) ) {
@@ -49,8 +53,6 @@ function wp_sb_register_element( $section_id, $element_id, $settings ){
 }
 
 /**
- *
- * priority
  * @param $section_id
  * @param $settings
  */
@@ -70,10 +72,7 @@ function wp_sb_register_section( $section_id, $settings ){
 
 
 
-global $wp_sb_fields ;
-if ( ! $wp_sb_fields ) {
-    $wp_sb_fields =  array();
-}
+
 
 
 function wp_sb_editing_attr( $key, $args = array(), $echo = true ){
@@ -110,8 +109,17 @@ function wp_sb_editing_field( $field_id, $default_data = array(),  $echo = true 
     }
 }
 
-function wp_sb_editing_section( $settings, $echo = true ){
-    return wp_sb_editing_attr( 'settings', $settings, $echo );
+function wp_sb_editing_section( $echo = true ){
+    global $current_section, $section_values, $section_settings;
+    $atts = '';
+    $atts .=  wp_sb_editing_attr( 'settings', $current_section, false );
+    $atts .=  wp_sb_editing_attr( 'values',array( 'tag' => $current_section['tag'], 'settings'=> $section_settings, 'fields' => $section_values ), false );
+
+    if ( $echo ){
+        echo $atts;
+    } else {
+        return $atts;
+    }
 }
 
 
@@ -134,6 +142,41 @@ function wp_get_setting_field( $settings,  $field, $default = array() ){
     return $default;
 }
 
+
+/**
+ *
+ *
+ * @param array $default
+ */
+function wp_sb_setup_section_data( $default = array() ){
+    if ( ! is_array( $default ) ) {
+        return ;
+    }
+    $default = wp_parse_args( $default,
+        array(
+            'fields'=> array() ,
+            'settings'=> array()
+        )
+    );
+
+    global $section_values;
+    global $section_settings;
+
+    $v = array();
+    foreach ( $default['fields'] as $k => $_v ) {
+        $_v = wp_parse_args( $_v, array( 'default' => '' ) );
+        $v[ $k ] = $_v['default'];
+    }
+
+    $s = array();
+    foreach ( $default['settings'] as $k => $_v ) {
+        $_v = wp_parse_args( $_v, array( 'default' => '' ) );
+        $v[ $k ] = $_v['default'];
+    }
+
+    $GLOBALS['section_values'] =  wp_parse_args( $section_values, $v );
+    $GLOBALS['section_settings'] =  wp_parse_args( $section_settings, $s );
+}
 
 
 
@@ -298,15 +341,11 @@ class WP_Site_Builder {
                 }
             }
         }
-
-
-
     }
 
 
 
-
-    function  load_site_builder( $file ){
+    function load_site_builder( $file ){
         return dirname( __FILE__ ).'/template.php';
     }
 

@@ -18,6 +18,41 @@ wp_sb_register_element( 'header', 'header-1', array(
     'thumb' => WP_SITE_BUILDER_URL.'blocks/header-1/images/thumb.jpg',
     'tpl' => WP_SITE_BUILDER_PATH.'blocks/header-1/tpl.php',
     'js' => WP_SITE_BUILDER_URL.'blocks/header-1/js/edit.js',
+
+    'fields' => array(
+        'title' => array(
+            'type' => 'inline', // inline edit
+            'default' => 'Hello, world!'
+        ),
+        'tagline'   => array(
+            'type' => 'inline',
+            'default' => 'This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.'
+        ),
+        'button'    => array(
+            'type' => 'button',
+            'default' => 'Hello, world!'
+        ),
+    ),
+    'settings' =>  array(
+        'bg' => array(
+            'img_url' => '',
+            'img_id' => '',
+            'bg_color' => '',
+            'bg_type' => '',
+        ),
+        'content_box' => array( // add class content-box to element want to see live view
+            'bg_color' => '',
+            'opacity' => '',
+            'text_color' => '',
+        ),
+        'typography' =>  array(
+            'font' => '',
+            'size' => '',
+            'color' => '',
+        ),
+        'align' => 'left',
+    )
+
 ) );
 
 
