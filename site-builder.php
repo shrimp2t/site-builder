@@ -93,7 +93,18 @@ function wp_sb_editing_attr( $key, $args = array(), $echo = true ){
     }
 }
 
-function wp_sb_editing_field( $field_id, $default_data = array(),  $echo = true ){
+function wp_sb_editing_field( $field_id, $echo = true ){
+    if( ! defined( 'WP_SB_EDITING' ) || WP_SB_EDITING != 1 ) {
+        return ;
+    }
+    global $current_section;
+    $default_data = '';
+    if ( isset( $current_section['fields'] ) && is_array( $current_section['fields'] ) ){
+        if ( isset( $current_section['fields'][ $field_id ] ) && isset( $current_section['fields'][ $field_id ]['default'] ) ) {
+            $default_data =  $current_section['fields'][ $field_id ]['default'];
+        }
+    }
+
     if ( $echo ) {
         wp_sb_editing_attr( 'content', $field_id, true );
         if ( ! empty ( $default_data ) && $default_data !== '' ){
@@ -110,10 +121,13 @@ function wp_sb_editing_field( $field_id, $default_data = array(),  $echo = true 
 }
 
 function wp_sb_editing_section( $echo = true ){
+    if( ! defined( 'WP_SB_EDITING' ) || WP_SB_EDITING != 1 ) {
+        return ;
+    }
     global $current_section, $section_values, $section_settings;
     $atts = '';
     $atts .=  wp_sb_editing_attr( 'settings', $current_section, false );
-    $atts .=  wp_sb_editing_attr( 'values',array( 'tag' => $current_section['tag'], 'settings'=> $section_settings, 'fields' => $section_values ), false );
+    $atts .=  wp_sb_editing_attr( 'values', array( 'tag' => $current_section['tag'], 'settings'=> $section_settings, 'fields' => $section_values ), false );
 
     if ( $echo ){
         echo $atts;
@@ -176,6 +190,25 @@ function wp_sb_setup_section_data( $default = array() ){
 
     $GLOBALS['section_values'] =  wp_parse_args( $section_values, $v );
     $GLOBALS['section_settings'] =  wp_parse_args( $section_settings, $s );
+}
+
+
+function wp_sb_get_field_value( $field_id ){
+    global $current_section, $section_values;
+    $value = false;
+    if ( isset ( $section_values[ $field_id ] ) ) {
+        $value = $section_values[ $field_id ];
+    }
+    $default_data = false;
+    if ( isset( $current_section['fields'] ) && is_array( $current_section['fields'] ) ){
+        if ( isset( $current_section['fields'][ $field_id ] ) && isset( $current_section['fields'][ $field_id ]['default'] ) ) {
+            $default_data =  $current_section['fields'][ $field_id ]['default'];
+        }
+    }
+    if  ( $default_data && is_array( $default_data ) ){
+        $value =  wp_parse_args( $value, $default_data );
+    }
+    return $value;
 }
 
 

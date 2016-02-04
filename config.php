@@ -30,7 +30,12 @@ wp_sb_register_element( 'header', 'header-1', array(
         ),
         'button'    => array(
             'type' => 'button',
-            'default' => 'Hello, world!'
+            'default' => array(
+                'button_style' =>'btn-primary',
+                'size'=>'btn-lg',
+                'label' => 'Learn more »'
+            ),
+
         ),
     ),
     'settings' =>  array(

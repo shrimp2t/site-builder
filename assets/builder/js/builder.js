@@ -21,7 +21,10 @@
             that.settings = $context.attr( 'data-settings' ) || '{}';
             that.settings =  JSON.parse( that.settings );
             //console.log(  that );
-            that.values = { 'tag': that.settings.tag ,  'fields': {}, 'settings': {} };
+            that.values = $context.attr( 'data-values' ) || '{}';
+            that.values =  JSON.parse( that.values );
+            //that.values = { 'tag': that.settings.tag ,  'fields': {}, 'settings': {} };
+            that.values = $.extend( {}, { 'tag': that.settings.tag ,  'fields': {}, 'settings': {} }, that.values );
 
             /**
              * Function that loads the Mustache template
