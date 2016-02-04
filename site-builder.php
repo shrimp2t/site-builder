@@ -185,7 +185,7 @@ function wp_sb_setup_section_data( $default = array() ){
     $s = array();
     foreach ( $default['settings'] as $k => $_v ) {
         $_v = wp_parse_args( $_v, array( 'default' => '' ) );
-        $v[ $k ] = $_v['default'];
+        $s[ $k ] = $_v['default'];
     }
 
     $GLOBALS['section_values'] =  wp_parse_args( $section_values, $v );

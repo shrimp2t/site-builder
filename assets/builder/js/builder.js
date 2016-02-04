@@ -24,7 +24,7 @@
             that.values = $context.attr( 'data-values' ) || '{}';
             that.values =  JSON.parse( that.values );
             //that.values = { 'tag': that.settings.tag ,  'fields': {}, 'settings': {} };
-            that.values = $.extend( {}, { 'tag': that.settings.tag ,  'fields': {}, 'settings': {} }, that.values );
+            that.values = $.extend( {}, { 'tag': that.settings.tag , 'fields': {}, 'settings': {} }, that.values );
 
             /**
              * Function that loads the Mustache template
@@ -58,10 +58,11 @@
             };
 
             that.updateData =  function( type, key ,value ){
-                if ( typeof that.values[ type ] == "undefined" ) {
+                if ( typeof that.values[ type ] === "undefined" ) {
                     that.values[ type ] = {};
                 }
                 that.values[ type ][ key ] = value;
+               // console.log( JSON.stringify( that.values ));
                 $context.attr( 'data-values', JSON.stringify( that.values ) );
                 $context.trigger( 'change' );
             };
@@ -82,9 +83,9 @@
 
                 if( typeof that.settings.fields !== "undefined" ){
                     _.each( that.settings.fields, function( field, key ){
-                        console.log( field );
-                        console.log( key );
-                        console.log( '----' );
+                        //console.log( field );
+                        //console.log( key );
+                        //console.log( '----' );
                         var element =  $( '[data-content="'+key+'"]', $context );
 
                         switch ( field.type ) {

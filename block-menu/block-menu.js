@@ -24,13 +24,12 @@ function hexToRgb(hex) {
         open:  function( field  ){
             // data, element, modal, section
         },
-        change:  function( field  ){
+        change:  function( field ){
             field.section.css( { 'background-color': field.data.bg_color , 'background-image': 'url("'+field.data.img_url+'")' } );
             field.control.updateData( 'settings', 'bg', field.data );
         },
         save: function( field ){
             // data, element, modal , section
-
         },
         close: function( field ){
             //  data, element, modal , section
