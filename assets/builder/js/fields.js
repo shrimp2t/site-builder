@@ -22,7 +22,6 @@
                 var selection = frame.state().get('selection');
             });
 
-
             $('.item-media', $context).each( function(){
                 var _item = $( this );
                 // when remove item
@@ -74,7 +73,6 @@
                         input.val( ui.color.toString() ).trigger( 'change' );
                         //input.trigger( 'change' );
                     }
-
                 } );
             } );
 
@@ -156,7 +154,7 @@
 
             var ww = wrap.width();
             var modal_w = $( '.modal-dialog', wrap ).width();
-            $( '.modal-dialog', wrap ).css( { 'top': '30px', 'left': ( (  ww - modal_w  ) / 2) + 'px' } );
+            $( '.modal-dialog', wrap ).css( { 'top': '30px', 'left': ( ( (  ww - modal_w  ) / 2) + wrap.offset().left ) + 'px' } );
 
             $( '.modal-dialog', wrap ).draggable({
                 containment: wrap,
@@ -217,8 +215,6 @@
 
                 modal.remove();
             } );
-
-
         });
 
     };

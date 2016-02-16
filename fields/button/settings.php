@@ -56,7 +56,6 @@
                                         </label>
                                     </div>
 
-
                                     <div class="col col-md-6">
                                         <label>
                                             <input type="radio" <# if ( data.button_style === 'btn-primary-outline' ) { #> checked="checked" <# } #>  name="button_style" value="btn-primary-outline">   <span  class="btn btn-primary-outline">Primary</span>

@@ -34,8 +34,9 @@ function wp_sb_register_element( $section_id, $element_id, $settings ){
     }
     $settings = wp_parse_args( $settings, array(
         'tag'    => $element_id,
-        'title' => $element_id,
+        'title'  => $element_id,
         'priority' => '',
+        'function' => '',
         'thumb' => '',
         'tpl' => '',
         'js' => '',
@@ -46,7 +47,6 @@ function wp_sb_register_element( $section_id, $element_id, $settings ){
     if ( ! isset( $wp_sb_sections[ $section_id ] ) ) {
         wp_sb_register_section( $section_id, array() );
     }
-
     $wp_sb_sections[ $section_id ][ 'elements' ][ $element_id ] =  $settings;
     $wp_sb_elements[ $element_id ] = $settings;
 
@@ -106,13 +106,16 @@ function wp_sb_editing_field( $field_id, $echo = true ){
     }
 
     if ( $echo ) {
+        wp_sb_editing_attr( 'section-id', $current_section['tag'], true );
         wp_sb_editing_attr( 'content', $field_id, true );
         if ( ! empty ( $default_data ) && $default_data !== '' ){
             wp_sb_editing_attr( 'default', $default_data, true );
         }
         return ;
     } else {
-       $attr =  wp_sb_editing_attr( 'content', $field_id, false );
+        $attr = '';
+        $attr .=  wp_sb_editing_attr( 'section-id', $current_section['tag'], false );
+        $attr .=  wp_sb_editing_attr( 'content', $field_id, false );
         if ( ! empty ( $default_data ) && $default_data !== '' ){
             $attr .= wp_sb_editing_attr( 'default', $default_data, false );
         }
@@ -126,8 +129,18 @@ function wp_sb_editing_section( $echo = true ){
     }
     global $current_section, $section_values, $section_settings;
     $atts = '';
-    $atts .=  wp_sb_editing_attr( 'settings', $current_section, false );
-    $atts .=  wp_sb_editing_attr( 'values', array( 'tag' => $current_section['tag'], 'settings'=> $section_settings, 'fields' => $section_values ), false );
+    $atts .=  wp_sb_editing_attr( 'settings', array(
+        'tag' => $current_section[ 'tag' ],
+        'fields' => $current_section[ 'fields' ],
+        'settings' => $current_section[ 'settings' ],
+    ) , false );
+    $atts .=  wp_sb_editing_attr( 'values',
+        array(
+            'tag' => $current_section['tag'],
+            'settings'=> $section_settings,
+            'fields' => $section_values
+        ),
+        false );
 
     if ( $echo ){
         echo $atts;
@@ -222,6 +235,9 @@ class WP_Site_Builder {
         add_action( 'wp_ajax_wp_save_site_builder', array( $this, 'save' ) );
     }
 
+    /**
+     * Save builder data
+     */
     function save(){
         $data =  $_POST['builder_content'];
         $data = stripslashes_deep( $data );
@@ -229,6 +245,9 @@ class WP_Site_Builder {
         die( 'site_builder_saved' );
     }
 
+    /**
+     * Setup builder
+     */
     public function init(){
         if ( isset( $_GET['site_builder'] ) && $_GET['site_builder'] == 1 ) {
             add_action( 'template_include', array( $this, 'load_site_builder' ) );
@@ -248,81 +267,100 @@ class WP_Site_Builder {
 
             add_filter('show_admin_bar', '__return_false');
 
-            wp_enqueue_style( 'dashicons' );
-            wp_enqueue_style( 'jquery-ui',  WP_SITE_BUILDER_URL.'assets/builder/css/jquery-ui.css' );
-            wp_enqueue_style( 'site-builder', WP_SITE_BUILDER_URL.'assets/builder/css/builder.css' );
-            //wp_enqueue_style( 'bootstrap', WP_SITE_BUILDER_URL.'assets/bootstrap/css/bootstrap.min.css' );
-            wp_enqueue_style( 'bootstrap', WP_SITE_BUILDER_URL.'assets/bootstrap/scss/bootstrap.css' );
+            add_action( 'wp', array( $this, 'load_scripts' ) );
 
-            wp_enqueue_style( 'wp-color-picker' );
+            include WP_SITE_BUILDER_PATH.'config.php';
 
-            wp_enqueue_media();
-
-
-            wp_enqueue_script( 'jquery' );
-            wp_enqueue_script( 'query-ui-core' );
-            wp_enqueue_script( 'jquery-ui-widget' );
-            wp_enqueue_script( 'jquery-ui-draggable' );
-            wp_enqueue_script( 'jquery-ui-sortable' );
-            wp_enqueue_script( 'jquery-ui-droppable' );
-            wp_enqueue_script( 'jquery-ui-resizable' );
-            wp_enqueue_script( 'json2' );
-            wp_enqueue_script( 'underscore' );
-
-            wp_enqueue_script(
-                'iris',
-                admin_url( 'js/iris.min.js' ),
-                array( 'jquery-ui-draggable', 'jquery-ui-slider', 'jquery-touch-punch' ),
-                false,
-                1
-            );
-            wp_enqueue_script(
-                'wp-color-picker',
-                admin_url( 'js/color-picker.min.js' ),
-                array( 'iris' ),
-                false,
-                1
-            );
-
-            $colorpicker_l10n = array(
-                'clear' => __( 'Clear' ),
-                'defaultString' => __( 'Default' ),
-                'pick' => __( 'Select Color' )
-            );
-
-            wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', $colorpicker_l10n );
-            wp_enqueue_script( 'site-builder-fields', WP_SITE_BUILDER_URL.'assets/builder/js/fields.js', array( 'jquery' ) );
-
-
-            wp_localize_script( 'jquery', 'wpSiteBuilder', array(
-                'ajax_url' => admin_url( 'admin-ajax.php' ),
-            ) );
-
-
-            global $wp_sb_fields;
-            if ( is_array( $wp_sb_fields ) ) {
-                foreach( $wp_sb_fields as $k => $f ){
-                    if ( $f['js'] ){
-                        // echo $f['js'];
-                        wp_enqueue_script( 'site-builder-field-'.$k, $f['js'] , array( 'jquery' ) );
-                    }
+            global $wp_sb_elements;
+            foreach ( $wp_sb_elements as $e ){
+                if ( isset ( $e['function'] ) && is_file( $e['function'] ) ) {
+                    include_once $e['function'];
                 }
             }
 
-
-            wp_enqueue_script( 'site-builder-menu', WP_SITE_BUILDER_URL.'block-menu/block-menu.js', array( 'jquery' ) );
-            wp_enqueue_script( 'site-builder', WP_SITE_BUILDER_URL.'assets/builder/js/builder.js', array( 'jquery' ) );
-            wp_enqueue_script( 'site-builder-live-view', WP_SITE_BUILDER_URL.'assets/builder/js/live-view.js', array( 'jquery' ) );
-
             add_action( 'wp_footer', array( $this ,'load_panel' ) );
             add_action( 'wp_footer', array( $this ,'load_fields' ) );
+            add_action( 'wp_footer', array( $this ,'load_builder_elements' ) );
 
-            include WP_SITE_BUILDER_PATH.'config.php';
+
 
         }
 
     }
 
+    function load_scripts(){
+
+        wp_enqueue_style( 'dashicons' );
+        wp_enqueue_style( 'jquery-ui',  WP_SITE_BUILDER_URL.'assets/builder/css/jquery-ui.css' );
+        wp_enqueue_style( 'site-builder', WP_SITE_BUILDER_URL.'assets/builder/css/builder.css' );
+        //wp_enqueue_style( 'bootstrap', WP_SITE_BUILDER_URL.'assets/bootstrap/css/bootstrap.min.css' );
+        wp_enqueue_style( 'bootstrap', WP_SITE_BUILDER_URL.'assets/bootstrap/scss/bootstrap.css' );
+        wp_enqueue_style( 'wp-color-picker' );
+        wp_enqueue_media();
+
+
+        wp_enqueue_script( 'jquery' );
+        wp_enqueue_script( 'query-ui-core' );
+        wp_enqueue_script( 'jquery-ui-widget' );
+        wp_enqueue_script( 'jquery-ui-draggable' );
+        wp_enqueue_script( 'jquery-ui-sortable' );
+        wp_enqueue_script( 'jquery-ui-droppable' );
+        wp_enqueue_script( 'jquery-ui-resizable' );
+        wp_enqueue_script( 'json2' );
+        wp_enqueue_script( 'underscore' );
+
+        wp_enqueue_script(
+            'iris',
+            admin_url( 'js/iris.min.js' ),
+            array( 'jquery-ui-draggable', 'jquery-ui-slider', 'jquery-touch-punch' ),
+            false,
+            1
+        );
+        wp_enqueue_script(
+            'wp-color-picker',
+            admin_url( 'js/color-picker.min.js' ),
+            array( 'iris' ),
+            false,
+            1
+        );
+
+        $colorpicker_l10n = array(
+            'clear' => __( 'Clear' ),
+            'defaultString' => __( 'Default' ),
+            'pick' => __( 'Select Color' )
+        );
+
+        wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', $colorpicker_l10n );
+        wp_enqueue_script( 'site-builder-fields', WP_SITE_BUILDER_URL.'assets/builder/js/fields.js', array( 'jquery' ) );
+
+        global $wp_sb_sections;
+        wp_localize_script( 'jquery', 'wpSiteBuilder', array(
+            'ajax_url' => admin_url( 'admin-ajax.php' ),
+            'sections' => $wp_sb_sections,
+        ) );
+
+
+        global $wp_sb_fields;
+        if ( is_array( $wp_sb_fields ) ) {
+            foreach( $wp_sb_fields as $k => $f ){
+                if ( $f['js'] ){
+                    // echo $f['js'];
+                    wp_enqueue_script( 'site-builder-field-'.$k, $f['js'] , array( 'jquery' ) );
+                }
+            }
+        }
+
+
+        wp_enqueue_script( 'site-builder-menu', WP_SITE_BUILDER_URL.'block-menu/block-menu.js', array( 'jquery' ) );
+        wp_enqueue_script( 'site-builder', WP_SITE_BUILDER_URL.'assets/builder/js/builder.js', array( 'jquery' ) );
+        wp_enqueue_script( 'site-builder-live-view', WP_SITE_BUILDER_URL.'assets/builder/js/live-view.js', array( 'jquery' ) );
+
+
+    }
+
+    /**
+     * Load Fields Setup
+     */
     function setup_fields() {
 
         global $wp_sb_fields;
@@ -346,11 +384,11 @@ class WP_Site_Builder {
                         );
                     }
 
-                } else {
+                } else { // folder field
                     $name = basename( $file );
                     $wp_sb_fields[ $name ]  = array(
-                        'tpl' => $file."{$name}.php",
-                        'js' => is_file( $file."{$name}.js" ) ? WP_SITE_BUILDER_URL."fields/{$name}/{$name}.js"  : false
+                        'tpl' =>  is_file( $file."settings.php" ) ?  $file."settings.php" : false,
+                        'js' => is_file( $file."admin.js" ) ? WP_SITE_BUILDER_URL."fields/{$name}/admin.js"  : false
                     );
                 }
 
@@ -360,7 +398,6 @@ class WP_Site_Builder {
     }
 
 
-
     function load_fields(){
         global $wp_sb_fields;
         if ( is_array( $wp_sb_fields ) ) {
@@ -368,7 +405,7 @@ class WP_Site_Builder {
                 if ( $f['js'] ){
                     wp_enqueue_script( 'site-builder-field-'.$k, $f['js']  );
                 }
-                if (  $f['tpl'] ){
+                if ( file_exists( $f['tpl'] ) ){
                     // echo $f['tpl']; die();
                     include_once $f['tpl'];
                 }
@@ -376,6 +413,29 @@ class WP_Site_Builder {
         }
     }
 
+    function load_builder_elements(){
+        global  $wp_sb_elements;
+        if ( is_array( $wp_sb_elements ) ) {
+            foreach( $wp_sb_elements as $id => $item ){
+                $GLOBALS['current_section']  =  $item;
+                $GLOBALS['section_values']   =  array();
+                $GLOBALS['section_settings'] =  array();
+                wp_sb_setup_section_data( array(
+                        'fields'   => $item['fields'],
+                        'settings' => $item['settings'] )
+                );
+                ?>
+                <script id="<?php echo esc_attr( 'wp_sb_tpl_block_'.$id ); ?>" type="text/html">
+                    <?php
+                    if ( file_exists( $item['tpl'] ) ) {
+                        include $item['tpl'];
+                    }
+                    ?>
+                </script>
+                <?php
+            }
+        }
+    }
 
 
     function load_site_builder( $file ){

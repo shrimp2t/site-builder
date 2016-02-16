@@ -24,7 +24,7 @@
                 if ( isset( $block['tag'] ) ) {
                     if ( isset ( $wp_sb_elements[ $block['tag'] ] ) ) {
                         if ( file_exists( $wp_sb_elements[ $block['tag'] ]['tpl'] ) ) {
-                            //var_dump( $block );
+
                             $GLOBALS['current_section']  =  $wp_sb_elements[ $block['tag'] ];
                             $GLOBALS['section_values']   =  $block['fields'];
                             $GLOBALS['section_settings'] =  $block['settings'];
@@ -33,8 +33,8 @@
                                 'fields' => $wp_sb_elements[ $block['tag'] ]['fields'],
                                 'settings' => $wp_sb_elements[ $block['tag'] ]['settings'] )
                             );
-
                             include $wp_sb_elements[ $block['tag'] ]['tpl'];
+
                         }
 
                     }

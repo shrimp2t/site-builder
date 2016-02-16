@@ -7,6 +7,17 @@
     window.wp_sb_fields = window.wp_sb_fields || {};
 
     wp_sb_fields[ 'button' ]  = {
+        init: function( field ){
+            field.element.on( 'click', function( e ) {
+                e.preventDefault();
+                data_default = field.element.attr('data-default') || '{}';
+                data_default = JSON.parse(data_default);
+                data_default['label'] = field.element.text();
+                data_default['target'] = field.element.attr('target') || '';
+                data_default['url'] = field.element.attr('href') || '#';
+                field.control.element_modal( field.element, field.field, field.key, data_default );
+            });
+        },
         open:  function( field  ){
             // data, element, modal, section
         },

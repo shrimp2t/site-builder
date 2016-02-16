@@ -1,13 +1,9 @@
 @import "../../bourbon/_bourbon";
 
 
-
-
 body {
     overflow: hidden;
 }
-
-
 
 .wp-sb-collapse-sidebar {
   position: fixed;
@@ -80,7 +76,6 @@ body {
     width: 100%;
     @include transition(200ms ease);
   }
-
 
   .wp-sb-actions {
       border-bottom: 1px solid #ddd;
@@ -382,9 +377,6 @@ body {
             box-shadow: inset 0px 0px 0px 2px rgba(217,84,79,0.68);
             */
 
-
-
-
           }
       }
       .section-placeholder {
@@ -394,6 +386,37 @@ body {
           border-top: 2px dashed #CCCCCC;
           border-bottom: 2px dashed #CCCCCC;
       }
+
+      // Layout builder
+      div[data-content="layout"] {
+          position: relative;
+          display: block;
+      }
+      .layout-wrapper:hover {
+          border: 1px outset #cccccc;
+      }
+      .layout-wrapper {
+        position: relative;
+        display: block;
+
+      }
+      .layout-tool-bar {
+          ul,  li {
+            list-style: none;
+            margin: 0px;
+            padding: 0px;
+          }
+          position: absolute;
+          display: block;
+          top: -20px;
+          left: 0px;
+          li {
+              cursor: pointer;
+              display: inline-block;
+          }
+      }
+
+
   }
 }
 

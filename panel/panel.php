@@ -31,32 +31,16 @@ global $wp_sb_sections, $wp_sb_elements;
                         </div>
 
                         <div class="wp-sb-elements-wrap">
-                            <?php foreach( $section['elements'] as $el_id => $el ) { ?>
+                            <?php foreach( $section['elements'] as $el_id => $el ) {
+
+                                ?>
                                 <div class="wp-sb-element" data-el-id="<?php echo esc_attr( $el_id ); ?>">
                                     <?php if ( $el['thumb'] ) { ?>
                                     <img src="<?php echo esc_url( $el['thumb'] ); ?>" alt="">
                                     <?php } ?>
-
                                     <?php
                                     echo esc_html( $el['title'] );
-
-                                    $GLOBALS['current_section']  =  $wp_sb_elements[ $el_id ];
-                                    $GLOBALS['section_values']   =  array();
-                                    $GLOBALS['section_settings'] =  array();
-
-                                    wp_sb_setup_section_data( array(
-                                            'fields' => $wp_sb_elements[ $el_id ]['fields'],
-                                            'settings' => $wp_sb_elements[ $el_id ]['settings'] )
-                                    );
-
                                     ?>
-                                    <script id="<?php echo esc_attr( 'wp_sb_tpl_block_'.$el_id ); ?>" type="text/html">
-                                        <?php
-                                            if ( file_exists( $el['tpl'] ) ) {
-                                                include $el['tpl'];
-                                            }
-                                        ?>
-                                    </script>
                                 </div>
                             <?php } ?>
                             <div class="fix-height"></div>

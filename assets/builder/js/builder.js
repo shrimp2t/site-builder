@@ -83,38 +83,19 @@
 
                 if( typeof that.settings.fields !== "undefined" ){
                     _.each( that.settings.fields, function( field, key ){
-                        //console.log( field );
-                        //console.log( key );
-                        //console.log( '----' );
-                        var element =  $( '[data-content="'+key+'"]', $context );
-
-                        switch ( field.type ) {
-                            case 'inline':
-
-                                element.on( 'click', function( e ){
-                                    e.preventDefault();
-                                    element.attr( 'contenteditable', 'true' );
+                        var element =  $( '[data-section-id="' + that.settings.tag + '"][data-content="'+key+'"]', $context );
+                        var data =  that.values['fields'][ key ] || {};
+                        if ( typeof window.wp_sb_fields[ field.type ] !== "undefined" ) {
+                            if( typeof window.wp_sb_fields[ field.type ].init === "function" ) {
+                                window.wp_sb_fields[ field.type ].init( {
+                                    data: data,
+                                    key: key,
+                                    element: element,
+                                    field: field,
+                                    section: $context,
+                                    control: that,
                                 } );
-
-                                element.on( 'blur keyup', function( e ){
-                                    e.preventDefault();
-                                    that.updateDataInline( element, field, key );
-                                } );
-                                break;
-                            default :
-                                element.on( 'click', function( e ){
-                                    e.preventDefault();
-                                    if ( element.attr( 'data-open-modal' ) !== 'y' ) {
-                                        data_default = element.attr( 'data-default' ) || '{}';
-                                        data_default = JSON.parse( data_default );
-                                        data_default['label']  = element.text();
-                                        data_default['target'] = element.attr( 'target' ) || '';
-                                        data_default['url'] = element.attr( 'href' ) || '#';
-                                        that.element_modal( element , field, key, data_default  );
-                                    }
-                                } );
-
-                                break;
+                            }
                         }
 
                     } );
@@ -345,14 +326,16 @@
 
             function update_builder_data(){
                 var data = {};
-                $( '.section', area ).each( function( index ){
-                    var _data = $( this).attr( 'data-values' ) || '{}';
+                $( ' >.section ', area ).each( function( index ){
+                    var _data = $( this ).attr( 'data-values' ) || '{}';
                     data[ index ] = JSON.parse( _data );
                 } );
                 value_field.val( JSON.stringify( data ) );
             }
 
-            $( '.section', area ).each( function(){
+            update_builder_data();
+
+            $( '>.section', area ).each( function(){
                 $( this).wp_sb_block_builder(  );
                 $( this ).bind( 'change', function(){
                     update_builder_data();
@@ -377,6 +360,9 @@
                 //handle: ".handle",
                 //helper: "clone",
                 change: function( event, ui ) {
+                    update_builder_data();
+                },
+                update: function( event, ui ) {
                     update_builder_data();
                 },
                 handle: '.wp-section-order'
