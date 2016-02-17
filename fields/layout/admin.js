@@ -10,7 +10,7 @@
         update_data: function( field ){
             var values =  {};
             $( ' > .section', field.element ).each( function( index ) {
-                values[ index ] = JSON.parse( $( this).attr( 'data-values' ) );
+                values[ index ] = JSON.parse( $( this).attr( 'data-values' ) || '{}' );
             } );
 
             // Update data
@@ -39,7 +39,10 @@
                 //handle: ".handle",
                 //helper: "clone",
                 change: function( event, ui ) {
-                   // update_builder_data();
+                    that.update_data( field );
+                },
+                update: function( event, ui ) {
+                    that.update_data( field );
                 },
                 handle: '.wp-section-order'
             });
@@ -48,7 +51,6 @@
             $( ' > .section', field.element).on( 'change', function(){
                 that.update_data( field );
             } );
-
 
 
         },
