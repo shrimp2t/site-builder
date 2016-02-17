@@ -2,6 +2,9 @@
  * Created by truongsa on 1/16/16.
  */
 
+
+
+
 (function ( $ ) {
 
     $.fn.wp_sb_fields = function( options ) {
@@ -65,14 +68,11 @@
 
 
             // Color input
-            $('.input_color', $context ).each( function(){
+            $('.input-color', $context ).each( function(){
                 var input = $( this );
-                input.wpColorPicker( {
-
-                    change: function(event, ui ) {
-                        input.val( ui.color.toString() ).trigger( 'change' );
-                        //input.trigger( 'change' );
-                    }
+                input.colorpicker( {
+                   // format : 'hex',
+                    color : true
                 } );
             } );
 
@@ -152,6 +152,33 @@
             var modal = $( template( settings.data , settings.template ) );
             append_to.append( modal );
 
+            // Tabs setup
+            var tabs =  $( '.nav-tabs', modal );
+            if ( tabs.length > 0 ) {
+
+                $( '.nav-item .nav-link', tabs).each( function () {
+
+                    if ( $( this).hasClass( 'active' ) ) {
+                        var tab_id = $( this).attr( 'data-tab-id' ) || '';
+                        if ( tab_id != '' ) {
+                            $( '.tab-content', modal).hide();
+                            $( '.tab-content[data-tab-id="'+tab_id+'"]', modal ).show();
+                        }
+                    }
+
+                    $( this).on( 'click', function( e ) {
+                        e.preventDefault();
+                        $( '.nav-item .nav-link', tabs).removeClass( 'active' );
+                        $( this ).addClass( 'active' );
+                        var tab_id = $( this).attr( 'data-tab-id' ) || '';
+                        if ( tab_id != '' ) {
+                            $( '.tab-content', modal).hide();
+                            $( '.tab-content[data-tab-id="'+tab_id+'"]', modal ).show();
+                        }
+                    } );
+                } );
+            } // end tabs setup
+
             var ww = wrap.width();
             var modal_w = $( '.modal-dialog', wrap ).width();
             $( '.modal-dialog', wrap ).css( { 'top': '30px', 'left': ( ( (  ww - modal_w  ) / 2) + wrap.offset().left ) + 'px' } );
@@ -191,13 +218,14 @@
             } );
 
             // When input inside changes
-            modal.on( 'change', 'input, select, textarea' , function() {
+            modal.on( 'change changeColor', 'input, select, textarea, .input-color' , function() {
                 var data =  $( 'form', modal ).serializeObject();
+                //console.log( $( 'form', modal).serialize() );
                 if ( settings.change_trigger !== "" ) {
                     $( window ).trigger( settings.change_trigger, [ data, modal ] );
                 }
                 if ( typeof settings.change_cb  == "function" ) {
-                    settings.change_cb(  data, modal );
+                    settings.change_cb( data, modal );
                 }
             } );
 
@@ -212,7 +240,6 @@
                 if ( typeof settings.save_cb  == "function" ) {
                     settings.save_cb( data, modal );
                 }
-
                 modal.remove();
             } );
         });

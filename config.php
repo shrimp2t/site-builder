@@ -56,6 +56,12 @@ wp_sb_register_element( 'header', 'header-1', array(
         ),
     ),
     'settings' =>  array(
+        'design' => array(
+            'img_url' => '',
+            'img_id' => '',
+            'bg_color' => '',
+            'bg_type' => '',
+        ),
         'bg' => array(
             'img_url' => '',
             'img_id' => '',
@@ -112,6 +118,12 @@ wp_sb_register_element( 'content', 'layout-1', array(
         ),
     ),
     'settings' =>  array(
+        'design' => array(
+            'img_url' => '',
+            'img_id' => '',
+            'bg_color' => '',
+            'bg_type' => '',
+        ),
         'bg' => array(
             'img_url' => '',
             'img_id' => '',
@@ -158,6 +170,12 @@ wp_sb_register_element( 'content', 'posts-1', array(
         ),
     ),
     'settings' =>  array(
+        'design' => array(
+            'img_url' => '',
+            'img_id' => '',
+            'bg_color' => '',
+            'bg_type' => '',
+        ),
         'bg' => array(
             'img_url' => '',
             'img_id' => '',

@@ -430,6 +430,20 @@ body {
           height: 300px;
       }
   }
+  .modal-title {
+      font-size: 22px;
+      padding-top: 5px;
+      padding-bottom: 5px;
+  }
+  .modal-header {
+      padding: 0px 15px 0px;
+
+  }
+  .modal-header .nav-tabs {
+      margin-top: 0px;
+      margin-bottom: -1px;
+  }
+
   .buttons-select {
       label {
           display: block;

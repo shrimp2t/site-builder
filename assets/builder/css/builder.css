@@ -424,18 +424,30 @@ body {
   .wp-sb-modal.modal-dialog .modal-body-wrapper {
     overflow: auto;
     height: 300px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003434}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003433}}
+.wp-sb-modal .modal-title {
+  font-size: 22px;
+  padding-top: 5px;
+  padding-bottom: 5px; }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003438}}
+.wp-sb-modal .modal-header {
+  padding: 0px 15px 0px; }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003442}}
+.wp-sb-modal .modal-header .nav-tabs {
+  margin-top: 0px;
+  margin-bottom: -1px; }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003448}}
 .wp-sb-modal .buttons-select label {
   display: block;
   margin-bottom: 15px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003442}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003456}}
 .wp-sb-modal .form-group label, .wp-sb-modal .form-group .text-muted {
   display: block; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003446}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003460}}
 .wp-sb-modal .wp-picker-holder {
   position: absolute;
   z-index: 999; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003450}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003464}}
 .wp-sb-modal .item-media {
   height: 100px;
   max-width: 100%;
@@ -446,7 +458,7 @@ body {
   background-position: center center;
   position: relative;
   background-color: #f5f5f5; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003460}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003474}}
   .wp-sb-modal .item-media .dashicons {
     position: absolute;
     bottom: 0px;
@@ -457,14 +469,14 @@ body {
     display: block;
     background: #EDEDED;
     cursor: pointer; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003470}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003484}}
     .wp-sb-modal .item-media .dashicons.upload-button {
       left: 0px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003473}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003487}}
     .wp-sb-modal .item-media .dashicons.remove-button {
       right: 0px; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003481}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003495}}
 .media-modal .screen-reader-text {
   display: none; }
 

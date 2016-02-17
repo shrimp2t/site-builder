@@ -17,9 +17,6 @@
 
             field.element.on( 'blur keyup', function( e ){
                 e.preventDefault();
-                console.log( field.key );
-                console.log( field.element );
-                console.log( '------' );
                 field.control.updateData( 'fields', field.key, field.element.text() );
             } );
         },

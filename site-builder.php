@@ -295,7 +295,8 @@ class WP_Site_Builder {
         wp_enqueue_style( 'site-builder', WP_SITE_BUILDER_URL.'assets/builder/css/builder.css' );
         //wp_enqueue_style( 'bootstrap', WP_SITE_BUILDER_URL.'assets/bootstrap/css/bootstrap.min.css' );
         wp_enqueue_style( 'bootstrap', WP_SITE_BUILDER_URL.'assets/bootstrap/scss/bootstrap.css' );
-        wp_enqueue_style( 'wp-color-picker' );
+        wp_enqueue_style( 'bootstrap-colorpicker', WP_SITE_BUILDER_URL.'assets/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css' );
+
         wp_enqueue_media();
 
 
@@ -324,13 +325,7 @@ class WP_Site_Builder {
             1
         );
 
-        $colorpicker_l10n = array(
-            'clear' => __( 'Clear' ),
-            'defaultString' => __( 'Default' ),
-            'pick' => __( 'Select Color' )
-        );
-
-        wp_localize_script( 'wp-color-picker', 'wpColorPickerL10n', $colorpicker_l10n );
+        wp_enqueue_script( 'bootstrap-colorpicker', WP_SITE_BUILDER_URL.'assets/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js' );
         wp_enqueue_script( 'site-builder-fields', WP_SITE_BUILDER_URL.'assets/builder/js/fields.js', array( 'jquery' ) );
 
         global $wp_sb_sections;

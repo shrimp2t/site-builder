@@ -20,6 +20,31 @@ function hexToRgb(hex) {
 
     window.wp_sb_block_fields = window.wp_sb_block_fields || {};
 
+    wp_sb_block_fields[ 'design' ]  = {
+        open:  function( field  ){
+            // data, element, modal, section
+        },
+        change:  function( field ){
+            console.log( field.data );
+            field.section.css( { 'background-color': field.data.bg_color , 'background-image': 'url("'+field.data.img_url+'")' } );
+            field.control.updateData( 'settings', 'bg', field.data );
+
+            $( '.content-box', field.section ).css( {
+                'background-color': field.data.content_bg_color,
+                'color': field.data.content_text_color,
+            } );
+
+
+        },
+        save: function( field ){
+            // data, element, modal , section
+        },
+        close: function( field ){
+            //  data, element, modal , section
+        },
+
+    };
+
     wp_sb_block_fields[ 'bg' ]  = {
         open:  function( field  ){
             // data, element, modal, section
@@ -44,41 +69,6 @@ function hexToRgb(hex) {
     };
 
 
-    wp_sb_block_fields[ 'box' ]  = {
-        open:  function( field  ){
-            // data, element, modal, section
-        },
-        change:  function( field  ){
-
-            var rgb= hexToRgb( field.data.bg_color );
-            field.data.opacity = parseFloat( field.data.opacity );
-            if ( isNaN( field.data.opacity ) ) {
-                field.data.opacity =  1;
-            }
-
-            if ( field.data.opacity > 1 ) {
-                field.data.opacity = 1;
-            }
-
-            if( rgb ) {
-                rgb +=","+field.data.opacity;
-            }
-
-            $( '.content-box', field.section ).css( {
-                'background-color': "rgba("+rgb+")",
-                'color': field.data.text_color,
-            } );
-
-        },
-        save: function( field ){
-            // data, element, modal , section
-
-        },
-        close: function( field ){
-            //  data, element, modal , section
-        },
-
-    };
 
 
 
