@@ -108,10 +108,7 @@
 
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php _e( 'Close', 'site-builder' ); ?></button>
-                <button type="button" class="btn btn-primary wp-sb-modal-save"><?php _e( 'Save', 'site-builder' ); ?></button>
-            </div>
+
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 

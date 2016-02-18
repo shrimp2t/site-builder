@@ -79,7 +79,7 @@
 
                             <label><?php _e( 'Background color', 'site-builder' );  ?></label>
                             <div class="input-group input-color">
-                                <input type="text" readonly="true" name="bg_color" value="{{ data.bg_color }}" class="form-control">
+                                <input type="text" name="bg_color" value="{{ data.bg_color }}" class="form-control">
                                 <span class="input-group-addon"><i></i></span>
                             </div>
 
@@ -104,7 +104,7 @@
 
                             <label><?php _e( 'Background color', 'site-builder' );  ?></label>
                             <div class="input-group input-color">
-                                <input type="text" name="content_bg_color" readonly="true" value="{{ data.bg_color }}" class="form-control">
+                                <input type="text" name="content_bg_color" value="{{ data.bg_color }}" class="form-control">
                                 <span class="input-group-addon"><i></i></span>
                             </div>
 

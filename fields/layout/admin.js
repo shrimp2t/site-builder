@@ -28,6 +28,7 @@
             that.wrapper.on( 'click', '.add-item', function( e ) {
                 e.preventDefault();
                 field.control.element_modal( field.element, field.field, field.key, {} );
+
             });
 
             // wp_sb_block_builder
@@ -37,7 +38,6 @@
                 //placeholder: "section-placeholder",
                 containment: field.element,
                 //handle: ".handle",
-                //helper: "clone",
                 change: function( event, ui ) {
                     that.update_data( field );
                 },
@@ -48,10 +48,9 @@
             });
 
             that.update_data( field );
-            $( ' > .section', field.element).on( 'change', function(){
+            $( ' > .section', field.element ).on( 'change', function(){
                 that.update_data( field );
             } );
-
 
         },
         open:  function( field ){
@@ -73,7 +72,7 @@
                     that.update_data( field );
                 } );
 
-                field.element.trigger( 'change' );
+                that.update_data( field );
 
                 field.modal.remove();
 

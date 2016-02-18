@@ -2,6 +2,24 @@
  * Created by truongsa on 1/16/16.
  */
 
+var wp_sb_cookie = {
+    set : function( cname, cvalue, exdays ){
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays*24*60*60*1000));
+        var expires = "expires="+d.toUTCString();
+        document.cookie = cname + "=" + cvalue + "; " + expires;
+    },
+    get: function( cname ){
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0; i<ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1);
+            if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+        }
+        return "";
+    },
+};
 
 
 
@@ -70,15 +88,8 @@
             // Color input
             $('.input-color', $context ).each( function(){
                 var input = $( this );
-                input.colorpicker( {
-                   // format : 'hex',
-                    color : true
-                } );
+                input.colorpicker();
             } );
-
-            //
-
-
         });
 
     };
@@ -87,6 +98,8 @@
 
 
 /* Modal Plugin */
+
+window.wp_sb_modal = window.wp_sb_modal || { width: 0, height: 0, left: 0, top: 0 };
 
 (function ( $ ) {
 
@@ -179,22 +192,54 @@
                 } );
             } // end tabs setup
 
-            var ww = wrap.width();
-            var modal_w = $( '.modal-dialog', wrap ).width();
-            $( '.modal-dialog', wrap ).css( { 'top': '30px', 'left': ( ( (  ww - modal_w  ) / 2) + wrap.offset().left ) + 'px' } );
+            if ( window.wp_sb_modal.width <= 0 ) {
+                window.wp_sb_modal.width = modal.width();
+            }
+
+            if ( window.wp_sb_modal.height <= 0 ) {
+                window.wp_sb_modal.height = modal.outerHeight();
+            }
+
+            if ( window.wp_sb_modal.top <= 0 ) {
+                window.wp_sb_modal.top = 30;
+            }
+
+            if ( window.wp_sb_modal.left <= 0 ) {
+                var ww = wrap.width();
+                var modal_w = $( '.modal-dialog', wrap ).width();
+                window.wp_sb_modal.left = ( (  ww - modal_w  ) / 2) + wrap.offset().left ;
+            }
+
+            modal.width( window.wp_sb_modal.width );
+            modal.css( { 'top': window.wp_sb_modal.top+'px', 'left': window.wp_sb_modal.left + 'px' } );
+
+            var h = $( '.modal-header', modal ).outerHeight() + $( '.modal-footer', modal ).outerHeight();
+            $( '.modal-body-wrapper', modal ).height( window.wp_sb_modal.height - h );
+            modal.height( window.wp_sb_modal.height );
+
 
             $( '.modal-dialog', wrap ).draggable({
                 containment: wrap,
                 handle: ".modal-header, .modal-footer",
+                drag: function( event, ui ) {
+                    window.wp_sb_modal.top = ui.position.top;
+                    window.wp_sb_modal.left = ui.position.left;
+                }
             }).resizable( {
                 containment: wrap,
                 start: function( event, ui ) {
                     var h = $( '.modal-header', ui.element ).outerHeight() + $( '.modal-footer', ui.element ).outerHeight();
                     $( '.modal-body-wrapper', ui.element ).height( ui.size.height - h );
+
+                    window.wp_sb_modal.width = ui.size.width;
+                    window.wp_sb_modal.height = ui.size.height;
                 },
                 resize: function( event, ui ) {
-                    var h = $( '.modal-header', ui.element).outerHeight() + $( '.modal-footer', ui.element).outerHeight();
+                    var h = $( '.modal-header', ui.element ).outerHeight() + $( '.modal-footer', ui.element).outerHeight();
                     $( '.modal-body-wrapper', ui.element ).height( ui.size.height - h );
+
+                    window.wp_sb_modal.width = ui.size.width;
+                    window.wp_sb_modal.height = ui.size.height;
                 }
             });
 
@@ -218,7 +263,7 @@
             } );
 
             // When input inside changes
-            modal.on( 'change changeColor', 'input, select, textarea, .input-color' , function() {
+            modal.on( 'change changeColor keyup', 'input, select, textarea, .input-color' , function() {
                 var data =  $( 'form', modal ).serializeObject();
                 //console.log( $( 'form', modal).serialize() );
                 if ( settings.change_trigger !== "" ) {

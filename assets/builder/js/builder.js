@@ -138,7 +138,6 @@
                 if (  typeof data === "undefined" ) {
                     data = default_values;
                 }
-
                 var html = {};
 
                 if ( $( '#wp-sb-field-'+field.type+'-tpl' ).length > 0 ) {
