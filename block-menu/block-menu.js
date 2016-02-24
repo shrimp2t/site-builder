@@ -34,7 +34,6 @@ function hexToRgb(hex) {
                 'color': field.data.content_text_color,
             } );
 
-
         },
         save: function( field ){
             // data, element, modal , section

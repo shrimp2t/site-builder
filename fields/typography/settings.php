@@ -23,25 +23,35 @@
                         <div class="tab-content" data-tab-id="general">
                             <fieldset class="form-group">
                                 <label ><?php _e( 'Content', 'site-builder' ); ?></label>
-                                <textarea class="form-control" name="label" rows="3">{{ data.label }}</textarea>
+                                <textarea class="form-control tinymce-active" name="label" rows="3">{{ data.label }}</textarea>
                             </fieldset>
+
+                            <fieldset class="form-group">
+                                <label>Text Align</label>
+                                <select name="css[textAlign]" class="form-control">
+                                    <option value="left">left</option>
+                                    <option value="center">center</option>
+                                    <option value="right">right</option>
+                                </select>
+                            </fieldset>
+
                         </div>
 
                         <div class="tab-content" data-tab-id="design">
                             <fieldset class="form-group">
                                 <label>Font name</label>
-                                <select name="font-family" class="form-control">
-                                    <option>Georgia</option>
-                                    <option>Times</option>
-                                    <option>Arial</option>
-                                    <option>Helvetica</option>
-                                    <option>Impact</option>
-                                    <option>Tahoma</option>
+                                <select name="css[fontFamily]" class="form-control">
+                                    <option value="Georgia">Georgia</option>
+                                    <option value="Times">Times</option>
+                                    <option value="Arial">Arial</option>
+                                    <option value="Helvetica">Helvetica</option>
+                                    <option value="Impact">Impact</option>
+                                    <option value="Tahoma">Tahoma</option>
                                 </select>
                             </fieldset>
                             <fieldset class="form-group">
                                 <label>Font Weight</label>
-                                <select name="font-weight" class="form-control">
+                                <select name="css[fontWeight]" class="form-control">
                                     <option value="normal">normal</option>
                                     <option value="bold">bold</option>
                                     <option value="bolder">bolder</option>
@@ -61,7 +71,7 @@
 
                             <fieldset class="form-group">
                                 <label>Font style</label>
-                                <select name="font-style" class="form-control">
+                                <select name="css[fontStyle]" class="form-control">
                                     <option value="normal">normal</option>
                                     <option value="italic">italic</option>
                                     <option value="oblique">oblique</option>
@@ -70,25 +80,38 @@
                             </fieldset>
                             <fieldset class="form-group">
                                 <label>Font Size</label>
-                                <input type="text" class="form-control" name="font-size">
+                                <input type="text" class="form-control" value="{{ data.css.fontSize }}" name="css[fontSize]">
                             </fieldset>
                             <fieldset class="form-group">
                                 <label>Line Height</label>
-                                <input name="line-height" type="text" class="form-control">
+                                <input name="css[lineHeight]"  value="{{ data.css.lineHeight }}" type="text" class="form-control">
                             </fieldset>
 
                             <fieldset class="form-group">
                                 <label>Letter spacing</label>
-                                <input name="letter-spacing" type="text" class="form-control">
+                                <input name="css[letterSpacing]" value="{{ data.letterSpacing }}" type="text" class="form-control">
                             </fieldset>
 
-                            <fieldset class="form-group">
-                                <label><?php _e( 'Color', 'site-builder' );  ?></label>
-                                <div class="input-group input-color">
-                                    <input type="text" name="color" value="{{ data.color }}" class="form-control">
-                                    <span class="input-group-addon"><i></i></span>
+                            <div class="row">
+                                <div class="col-md-6 col-sm-12">
+                                    <fieldset class="form-group">
+                                        <label><?php _e( 'Color', 'site-builder' );  ?></label>
+                                        <div class="input-group input-color">
+                                            <input type="text" name="css[color]" value="{{ data.css.color }}" class="form-control">
+                                            <span class="input-group-addon"><i></i></span>
+                                        </div>
+                                    </fieldset>
                                 </div>
-                            </fieldset>
+                                <div class="col-md-6 col-sm-12">
+                                    <fieldset class="form-group">
+                                        <label><?php _e( 'Color Hover', 'site-builder' );  ?></label>
+                                        <div class="input-group input-color">
+                                            <input type="text" name="css_hover[color]" value="{{ data.css_hover.color }}" class="form-control">
+                                            <span class="input-group-addon"><i></i></span>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
                         </div>
 
                     </form>

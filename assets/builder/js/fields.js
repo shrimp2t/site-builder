@@ -2,6 +2,11 @@
  * Created by truongsa on 1/16/16.
  */
 
+/**
+ * Cookie
+ *
+ * @type {{set: Function, get: Function}}
+ */
 var wp_sb_cookie = {
     set : function( cname, cvalue, exdays ){
         var d = new Date();
@@ -20,6 +25,101 @@ var wp_sb_cookie = {
         return "";
     },
 };
+// end cookies
+
+(function( $ ) {
+
+    window.wp_sb_live_css_data = window.wp_sb_live_css_data || {};
+    window.wp_sb_render_css_code = window.wp_sb_render_css_code || {};
+
+    window.wp_sb_live_css = {
+        code: '',
+        isANumber: function isANumber( n ) {
+            var numStr = /^-?\d+\.?\d*$/;
+            return numStr.test( n.toString() );
+        },
+
+        setupData: function( _data, unit ) {
+            var that = this;
+            if (  typeof _data !== "object" && typeof _data !== "array" ) {
+                return _data;
+            }
+
+            if (  typeof unit == "undefined" ) {
+                unit = 'px';
+            }
+
+            for (var key in _data ) {
+                if (_data.hasOwnProperty(key)) {
+                    var value =  _data[key];
+                    if (  typeof value === 'string' ) {
+                        if ( that.isANumber( value ) ) {
+                            _data[ key ] = value+unit;
+                        }
+                    }
+                }
+            }
+
+            return _data;
+        },
+        add: function ( id, selector, css , unit ) {
+            var that = this;
+            wp_sb_live_css_data[ id ] = { id: id, selector: selector, css: that.setupData( css , unit ) } ;
+        },
+
+        remove: function ( id ) {
+            delete wp_sb_live_css_data[ id ];
+        },
+
+        render: function(){
+            var css = this;
+            var render_item = $( '<div class="wp_sb_css_render_test"></div>' );
+            $( 'head').append('<style type="text/css" id="wp_sb_css_render_test_css">#wp_sb_css_render_test { display: none !important; }</style>');
+            $( 'body').append( render_item );
+
+            var data, item_code;
+            css.code = '';
+            for (var key in wp_sb_live_css_data ) {
+                data = wp_sb_live_css_data[ key ];
+                render_item.removeAttr('style');
+                render_item.css( data.css );
+                item_code = render_item.attr( 'style' ) || '';
+                if ( item_code !== '' ) {
+                    css.code +=' '+data.selector+'{ '+item_code+' }'+"\n";
+                    window.wp_sb_render_css_code[ key ] = item_code;
+                }
+            }
+
+            $( '#wp_sb_css_render_test, #wp_sb_css_render_test_css, #wp-sb-css-live-render').remove();
+            $( 'head').append('<style type="text/css" id="wp-sb-css-live-render">'+css.code+'</style>');
+
+        },
+        get: function( key ){
+            if ( typeof window.wp_sb_render_css_code[ key ] !== "undefined" ) {
+                return window.wp_sb_render_css_code[ key ];
+            }
+            return '';
+        },
+
+
+
+    };
+
+})(jQuery);
+
+/*
+jQuery( document ).ready( function( $ ){
+    var css = {
+        background: 'red',
+        color: '#333',
+        textAlign: 'center',
+    };
+
+    window.wp_sb_live_css.add('test_id', '.wp-sb-builder-area', css );
+    window.wp_sb_live_css.render();
+
+} );
+*/
 
 
 
@@ -84,12 +184,14 @@ var wp_sb_cookie = {
                 });
             } );
 
-
             // Color input
             $('.input-color', $context ).each( function(){
                 var input = $( this );
                 input.colorpicker();
             } );
+
+
+
         });
 
     };
@@ -160,6 +262,7 @@ window.wp_sb_modal = window.wp_sb_modal || { width: 0, height: 0, left: 0, top: 
 
         var template = repeaterTemplate();
 
+
         return this.each(function() {
 
             var modal = $( template( settings.data , settings.template ) );
@@ -227,6 +330,7 @@ window.wp_sb_modal = window.wp_sb_modal || { width: 0, height: 0, left: 0, top: 
                 }
             }).resizable( {
                 containment: wrap,
+                minWidth: 300,
                 start: function( event, ui ) {
                     var h = $( '.modal-header', ui.element ).outerHeight() + $( '.modal-footer', ui.element ).outerHeight();
                     $( '.modal-body-wrapper', ui.element ).height( ui.size.height - h );
@@ -265,7 +369,6 @@ window.wp_sb_modal = window.wp_sb_modal || { width: 0, height: 0, left: 0, top: 
             // When input inside changes
             modal.on( 'change changeColor keyup', 'input, select, textarea, .input-color' , function() {
                 var data =  $( 'form', modal ).serializeObject();
-                //console.log( $( 'form', modal).serialize() );
                 if ( settings.change_trigger !== "" ) {
                     $( window ).trigger( settings.change_trigger, [ data, modal ] );
                 }

@@ -157,8 +157,10 @@ wp_sb_register_element( 'content', 'posts-1', array(
     'fields' => array(
         'title' => array(
             'type' => 'typography', // inline edit
+            'css_selector' => 'typography', // inline edit
             'default' => array(
-                'style'=>'',
+                'css'=>'',
+                'css_hover'=>'',
                 'label' => 'This is heading typo'
             ),
         ),

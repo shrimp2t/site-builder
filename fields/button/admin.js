@@ -10,6 +10,11 @@
         init: function( field ){
             field.element.on( 'click', function( e ) {
                 e.preventDefault();
+                if ( field.element.hasClass('m-opened') ) {
+                    return false;
+                }
+                field.element.addClass('m-opened');
+
                 data_default = field.element.attr('data-default') || '{}';
                 data_default = JSON.parse(data_default);
                 data_default['label'] = field.element.text();
@@ -52,6 +57,7 @@
         },
         close: function( field ){
             //  data, element, modal , section
+            field.element.removeClass('m-opened');
         },
 
     };

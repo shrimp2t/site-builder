@@ -11,25 +11,167 @@
 // serializes a form into an (arguably more useful) object.
 
 
-(function($,undefined){
-    '$:nomunge'; // Used by YUI compressor.
+//
+// Use internal $.serializeArray to get list of form elements which is
+// consistent with $.serialize
+//
+// From version 2.0.0, $.serializeObject will stop converting [name] values
+// to camelCase format. This is *consistent* with other serialize methods:
+//
+//   - $.serialize
+//   - $.serializeArray
+//
+// If you require camel casing, you can either download version 1.0.4 or map
+// them yourself.
+//
 
-    $.fn.serializeObject = function(){
-        var obj = {};
+/**
+ * jQuery serializeObject
+ * @copyright 2014, macek <paulmacek@gmail.com>
+ * @link https://github.com/macek/jquery-serialize-object
+ * @license BSD
+ * @version 2.5.0
+ */
+(function(root, factory) {
 
-        $.each( this.serializeArray(), function(i,o){
-            var n = o.name,
-                v = o.value;
-
-            obj[n] = obj[n] === undefined ? v
-                : $.isArray( obj[n] ) ? obj[n].concat( v )
-                : [ obj[n], v ];
+    // AMD
+    if (typeof define === "function" && define.amd) {
+        define(["exports", "jquery"], function(exports, $) {
+            return factory(exports, $);
         });
+    }
 
-        return obj;
+    // CommonJS
+    else if (typeof exports !== "undefined") {
+        var $ = require("jquery");
+        factory(exports, $);
+    }
+
+    // Browser
+    else {
+        factory(root, (root.jQuery || root.Zepto || root.ender || root.$));
+    }
+
+}(this, function(exports, $) {
+
+    var patterns = {
+        validate: /^[a-z_][a-z0-9_]*(?:\[(?:\d*|[a-z0-9_]+)\])*$/i,
+        key:      /[a-z0-9_]+|(?=\[\])/gi,
+        push:     /^$/,
+        fixed:    /^\d+$/,
+        named:    /^[a-z0-9_]+$/i
     };
 
-})(jQuery);
+    function FormSerializer(helper, $form) {
+
+        // private variables
+        var data     = {},
+            pushes   = {};
+
+        // private API
+        function build(base, key, value) {
+            base[key] = value;
+            return base;
+        }
+
+        function makeObject(root, value) {
+
+            var keys = root.match(patterns.key), k;
+
+            // nest, nest, ..., nest
+            while ((k = keys.pop()) !== undefined) {
+                // foo[]
+                if (patterns.push.test(k)) {
+                    var idx = incrementPush(root.replace(/\[\]$/, ''));
+                    value = build([], idx, value);
+                }
+
+                // foo[n]
+                else if (patterns.fixed.test(k)) {
+                    value = build([], k, value);
+                }
+
+                // foo; foo[bar]
+                else if (patterns.named.test(k)) {
+                    value = build({}, k, value);
+                }
+            }
+
+            return value;
+        }
+
+        function incrementPush(key) {
+            if (pushes[key] === undefined) {
+                pushes[key] = 0;
+            }
+            return pushes[key]++;
+        }
+
+        function encode(pair) {
+            switch ($('[name="' + pair.name + '"]', $form).attr("type")) {
+                case "checkbox":
+                    return pair.value === "on" ? true : pair.value;
+                default:
+                    return pair.value;
+            }
+        }
+
+        function addPair(pair) {
+            if (!patterns.validate.test(pair.name)) return this;
+            var obj = makeObject(pair.name, encode(pair));
+            data = helper.extend(true, data, obj);
+            return this;
+        }
+
+        function addPairs(pairs) {
+            if (!helper.isArray(pairs)) {
+                throw new Error("formSerializer.addPairs expects an Array");
+            }
+            for (var i=0, len=pairs.length; i<len; i++) {
+                this.addPair(pairs[i]);
+            }
+            return this;
+        }
+
+        function serialize() {
+            return data;
+        }
+
+        function serializeJSON() {
+            return JSON.stringify(serialize());
+        }
+
+        // public API
+        this.addPair = addPair;
+        this.addPairs = addPairs;
+        this.serialize = serialize;
+        this.serializeJSON = serializeJSON;
+    }
+
+    FormSerializer.patterns = patterns;
+
+    FormSerializer.serializeObject = function serializeObject() {
+        return new FormSerializer($, this).
+            addPairs(this.serializeArray()).
+            serialize();
+    };
+
+    FormSerializer.serializeJSON = function serializeJSON() {
+        return new FormSerializer($, this).
+            addPairs(this.serializeArray()).
+            serializeJSON();
+    };
+
+    if (typeof $.fn !== "undefined") {
+        $.fn.serializeObject = FormSerializer.serializeObject;
+        $.fn.serializeJSON   = FormSerializer.serializeJSON;
+    }
+
+    exports.FormSerializer = FormSerializer;
+
+    return FormSerializer;
+}));
+
 
 
 //--------------------------------------------
@@ -49,7 +191,7 @@
             that.values =  JSON.parse( that.values );
             //that.values = { 'tag': that.settings.tag ,  'fields': {}, 'settings': {} };
             that.values = $.extend( {}, { 'tag': that.settings.tag , 'fields': {}, 'settings': {} }, that.values );
-
+            //console.log( that.values );
             /**
              * Function that loads the Mustache template
              */
@@ -112,7 +254,12 @@
                 if( typeof that.settings.fields !== "undefined" ){
                     _.each( that.settings.fields, function( field, key ){
                         var element =  $( '[data-section-id="' + that.settings.tag + '"][data-content="'+key+'"]', $context );
+                        var css_id = 'css-'+Math.random().toString(36).substr(2, 9);
+                        element.attr( 'data-css-id', css_id );
+                        element.addClass( 'css-el' );
+
                         var data =  that.values['fields'][ key ] || {};
+
                         if ( typeof window.wp_sb_fields[ field.type ] !== "undefined" ) {
                             if( typeof window.wp_sb_fields[ field.type ].init === "function" ) {
                                 window.wp_sb_fields[ field.type ].init( {
@@ -201,8 +348,8 @@
                     close_cb: function( modal ){
 
                         if ( typeof window.wp_sb_fields[ field.type ] !== "undefined" ) {
-                            if( typeof window.wp_sb_fields[ field.type].open ==="function" ) {
-                                window.wp_sb_fields[ field.type].open( {
+                            if( typeof window.wp_sb_fields[ field.type].close ==="function" ) {
+                                window.wp_sb_fields[ field.type].close( {
                                     data: data,
                                     key: key,
                                     element: element,
@@ -217,6 +364,11 @@
                 } );
 
             };
+
+            // Setup css editing css
+            var css_id = 'css-'+Math.random().toString(36).substr(2, 9);
+            $context.attr( 'data-css-id', css_id );
+            $context.addClass( 'css-el' );
 
             //Add section block settings
             var $block_menu = $( that.template( that.settings.settings, $( '#wp-sb-section-edit-menu').html() ) );
