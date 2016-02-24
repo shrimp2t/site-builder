@@ -48,7 +48,6 @@
 
 
 
-
 <script id="wp-sb-block-menu-design" type="text/html">
     <div class="wp-sb-modal modal-dialog" role="document">
         <div class="modal-content">
@@ -77,12 +76,21 @@
                     <form>
                         <div class="tab-content" data-tab-id="bg">
 
-                            <label><?php _e( 'Background color', 'site-builder' );  ?></label>
-                            <div class="input-group input-color">
-                                <input type="text" name="bg_color" value="{{ data.bg_color }}" class="form-control">
-                                <span class="input-group-addon"><i></i></span>
-                            </div>
-
+                            <fieldset class="form-group">
+                                <label><?php esc_html_e( 'Background type', 'site-builder' );  ?></label>
+                                <select name="bg_type" class="form-control">
+                                    <option value="color">Color</option>
+                                    <option value="image">Image</option>
+                                    <option value="video">Video</option>
+                                </select>
+                            </fieldset>
+                            <fieldset class="form-group">
+                                <label><?php _e( 'Background color', 'site-builder' );  ?></label>
+                                <div class="input-group input-color">
+                                    <input type="text" name="bg_color" value="{{ data.bg_color }}" class="form-control">
+                                    <span class="input-group-addon"><i></i></span>
+                                </div>
+                            </fieldset>
                             <fieldset class="form-group">
                                 <label><?php _e( 'Background image', 'site-builder' );  ?></label>
                                 <div class="item-media" style="background-image: url('{{ data.img_url }}');">
@@ -92,7 +100,6 @@
                                     <span class="remove-button dashicons dashicons-no-alt"></span>
                                 </div>
                             </fieldset>
-
                             <div class="checkbox">
                                 <label>
                                     <input type="checkbox" name="parallax" value="1"> <?php _e( 'Enable Parallax background' ); ?>
@@ -101,12 +108,13 @@
                         </div>
 
                         <div class="tab-content" data-tab-id="content">
-
-                            <label><?php _e( 'Background color', 'site-builder' );  ?></label>
-                            <div class="input-group input-color">
-                                <input type="text" name="content_bg_color" value="{{ data.bg_color }}" class="form-control">
-                                <span class="input-group-addon"><i></i></span>
-                            </div>
+                            <fieldset class="form-group">
+                                <label><?php _e( 'Background color', 'site-builder' );  ?></label>
+                                <div class="input-group input-color">
+                                    <input type="text" name="content_bg_color" value="{{ data.bg_color }}" class="form-control">
+                                    <span class="input-group-addon"><i></i></span>
+                                </div>
+                            </fieldset>
 
                             <fieldset class="form-group">
                                 <label><?php _e( 'Background opacity', 'site-builder' );  ?></label>

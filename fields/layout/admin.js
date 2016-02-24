@@ -9,7 +9,7 @@
     wp_sb_fields[ 'layout' ]  = {
         update_data: function( field ){
             var values =  {};
-            $( ' > .section', field.element ).each( function( index ) {
+            $( ' > .sb-section', field.element ).each( function( index ) {
                 values[ index ] = JSON.parse( $( this).attr( 'data-values' ) || '{}' );
             } );
 
@@ -32,7 +32,7 @@
             });
 
             // wp_sb_block_builder
-            $( ' > .section', field.element ).wp_sb_block_builder();
+            $( ' > .sb-section', field.element ).wp_sb_block_builder();
 
             field.element.sortable({
                 //placeholder: "section-placeholder",
@@ -48,7 +48,7 @@
             });
 
             that.update_data( field );
-            $( ' > .section', field.element ).on( 'change', function(){
+            $( ' > .sb-section', field.element ).on( 'change', function(){
                 that.update_data( field );
             } );
 

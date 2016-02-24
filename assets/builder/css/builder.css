@@ -296,17 +296,17 @@ body {
 .wp-sb-builder-content-wrap .wp-sb-builder-area {
   position: relative; }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003284}}
-  .wp-sb-builder-content-wrap .wp-sb-builder-area .section {
+  .wp-sb-builder-content-wrap .wp-sb-builder-area .sb-section {
     position: relative;
     margin-bottom: 0px;
     display: block; }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/bourbon\/addons\/_clearfix\.scss}line{font-family:\0000320}}
-    .wp-sb-builder-content-wrap .wp-sb-builder-area .section::after {
+    .wp-sb-builder-content-wrap .wp-sb-builder-area .sb-section::after {
       clear: both;
       content: "";
       display: table; }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003290}}
-    .wp-sb-builder-content-wrap .wp-sb-builder-area .section .wp-sb-section-edit {
+    .wp-sb-builder-content-wrap .wp-sb-builder-area .sb-section .wp-sb-section-edit {
       position: absolute;
       top: 0px;
       right: 0px;
@@ -314,7 +314,7 @@ body {
       background: #d9534f;
       color: #FFFFFF; }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003298}}
-      .wp-sb-builder-content-wrap .wp-sb-builder-area .section .wp-sb-section-edit .dashicons {
+      .wp-sb-builder-content-wrap .wp-sb-builder-area .sb-section .wp-sb-section-edit .dashicons {
         font-size: 24px;
         padding: 0px;
         width: 30px;
@@ -326,7 +326,7 @@ body {
         cursor: pointer;
         margin: 0px 5px; }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003309}}
-        .wp-sb-builder-content-wrap .wp-sb-builder-area .section .wp-sb-section-edit .dashicons.wp-section-order {
+        .wp-sb-builder-content-wrap .wp-sb-builder-area .sb-section .wp-sb-section-edit .dashicons.wp-section-order {
           cursor: grab;
           /* Safari */
           -webkit-transform: rotate(-90deg);
@@ -339,17 +339,17 @@ body {
           /* Internet Explorer */
           filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3); }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003329}}
-      .wp-sb-builder-content-wrap .wp-sb-builder-area .section .wp-sb-section-edit ul {
+      .wp-sb-builder-content-wrap .wp-sb-builder-area .sb-section .wp-sb-section-edit ul {
         list-style: none;
         margin: 0px;
         padding: 0px; }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003333}}
-        .wp-sb-builder-content-wrap .wp-sb-builder-area .section .wp-sb-section-edit ul li {
+        .wp-sb-builder-content-wrap .wp-sb-builder-area .sb-section .wp-sb-section-edit ul li {
           list-style: none;
           display: inline-block;
           position: relative; }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003337}}
-          .wp-sb-builder-content-wrap .wp-sb-builder-area .section .wp-sb-section-edit ul li ul {
+          .wp-sb-builder-content-wrap .wp-sb-builder-area .sb-section .wp-sb-section-edit ul li ul {
             position: absolute;
             width: 40px;
             top: 30px;
@@ -357,32 +357,32 @@ body {
             display: none;
             background: #333333; }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003344}}
-            .wp-sb-builder-content-wrap .wp-sb-builder-area .section .wp-sb-section-edit ul li ul li {
+            .wp-sb-builder-content-wrap .wp-sb-builder-area .sb-section .wp-sb-section-edit ul li ul li {
               display: block;
               padding: 5px 0px;
               text-align: center; }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003351}}
-          .wp-sb-builder-content-wrap .wp-sb-builder-area .section .wp-sb-section-edit ul li:hover ul {
+          .wp-sb-builder-content-wrap .wp-sb-builder-area .sb-section .wp-sb-section-edit ul li:hover ul {
             display: block; }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003360}}
-    .wp-sb-builder-content-wrap .wp-sb-builder-area .section:hover {
+    .wp-sb-builder-content-wrap .wp-sb-builder-area .sb-section:hover {
       /*
       -webkit-box-shadow: inset 0px 0px 0px 2px rgba(204,204,204,1);
       -moz-box-shadow: inset 0px 0px 0px 2px rgba(204,204,204,1);
       box-shadow: inset 0px 0px 0px 2px rgba(204,204,204,1);
       */ }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003368}}
-      .wp-sb-builder-content-wrap .wp-sb-builder-area .section:hover .wp-sb-section-edit {
+      .wp-sb-builder-content-wrap .wp-sb-builder-area .sb-section:hover .wp-sb-section-edit {
         display: block; }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003373}}
-    .wp-sb-builder-content-wrap .wp-sb-builder-area .section.section-editing {
+    .wp-sb-builder-content-wrap .wp-sb-builder-area .sb-section.sb-section-editing {
       /*
       -webkit-box-shadow: inset 0px 0px 0px 2px rgba(217,84,79,0.68);
       -moz-box-shadow: inset 0px 0px 0px 2px rgba(217,84,79,0.68);
       box-shadow: inset 0px 0px 0px 2px rgba(217,84,79,0.68);
       */ }
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/Data\/www\/site-builder\/wp-content\/plugins\/site-builder\/assets\/builder\/css\/builder\.scss}line{font-family:\00003382}}
-  .wp-sb-builder-content-wrap .wp-sb-builder-area .section-placeholder {
+  .wp-sb-builder-content-wrap .wp-sb-builder-area .sb-section-placeholder {
     height: 100px;
     display: block;
     background: #EDEDED;

@@ -281,7 +281,7 @@ body {
 .wp-sb-builder-content-wrap {
   .wp-sb-builder-area {
       position: relative;
-      .section {
+      .sb-section {
           position: relative;
           margin-bottom: 0px;
           display: block;
@@ -370,7 +370,7 @@ body {
             }
           }
 
-          &.section-editing {
+          &.sb-section-editing {
             /*
             -webkit-box-shadow: inset 0px 0px 0px 2px rgba(217,84,79,0.68);
             -moz-box-shadow: inset 0px 0px 0px 2px rgba(217,84,79,0.68);
@@ -379,7 +379,7 @@ body {
 
           }
       }
-      .section-placeholder {
+      .sb-section-placeholder {
           height: 100px;
           display: block;
           background: #EDEDED;

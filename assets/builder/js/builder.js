@@ -374,7 +374,7 @@
             var $block_menu = $( that.template( that.settings.settings, $( '#wp-sb-section-edit-menu').html() ) );
             $context.append( $block_menu );
             $context.on( 'click', function(){
-                $( '.wp-sb-builder-area .section').removeClass( 'section-editing' );
+                $( '.wp-sb-builder-area .sb-section').removeClass( 'section-editing' );
                 $context.addClass( 'section-editing' );
             } );
 
@@ -520,7 +520,7 @@
 
             function update_builder_data(){
                 var data = {};
-                $( ' >.section ', area ).each( function( index ){
+                $( ' >.sb-section ', area ).each( function( index ){
                     var _data = $( this ).attr( 'data-values' ) || '{}';
                     data[ index ] = JSON.parse( _data );
                 } );
@@ -529,7 +529,7 @@
 
             update_builder_data();
 
-            $( '>.section', area ).each( function(){
+            $( '>.sb-section', area ).each( function(){
                 $( this).wp_sb_block_builder(  );
                 $( this ).bind( 'change', function(){
                     update_builder_data();
@@ -541,9 +541,9 @@
             } );
 
             // when remove section
-            area.on( 'click', '.section .remove-section', function( e ){
+            area.on( 'click', '.sb-section .remove-section', function( e ){
                 e.preventDefault();
-                $( this).parents( '.section').remove();
+                $( this).parents( '.sb-section').remove();
                 area.trigger( 'change' );
             } );
 

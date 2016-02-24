@@ -70,20 +70,6 @@ class WP_Site_Builder {
 
         if ( isset( $_GET['site_viewer'] ) && $_GET['site_viewer'] == 1 ) {
             add_action( 'template_include', array( $this, 'load_view_template' ) );
-            //__return_null();
-           // add_filter( 'option_stylesheet', '__return_false' );
-           // add_filter( 'option_template', '__return_false' );
-            //add_filter( 'theme_root', '__return_false' );
-            //switch_theme();
-            /*
-            remove_all_actions('wp_head');
-            remove_all_actions('wp_footer');
-            add_action( 'wp_head', 'wp_print_scripts' );
-            add_action( 'wp_head', 'wp_print_styles' );
-            add_action( 'wp_footer', 'wp_print_styles', 80 );
-            add_action( 'wp_footer', 'wp_print_scripts', 80 );
-            */
-
 
             $this->init_setup();
             add_action( 'wp', array( $this, 'load_view_scripts' ) );
@@ -104,7 +90,6 @@ class WP_Site_Builder {
             remove_all_actions('wp_footer');
 
             $this->init_setup();
-
 
             add_action( 'wp_head', 'wp_print_scripts' );
             add_action( 'wp_head', 'wp_print_styles' );
@@ -136,6 +121,11 @@ class WP_Site_Builder {
 
     function load_view_scripts(){
         wp_enqueue_style( 'bootstrap', WP_SITE_BUILDER_URL.'assets/bootstrap/scss/bootstrap.css' );
+        wp_enqueue_style( 'builder-frontend', WP_SITE_BUILDER_URL.'assets/frontend/css/frontend.css' );
+        wp_enqueue_script('jquery');
+        wp_enqueue_script( 'parallax', WP_SITE_BUILDER_URL.'assets/frontend/js/parallax.js', array( 'jquery' ), false, true );
+        wp_enqueue_script( 'builder-frontend', WP_SITE_BUILDER_URL.'assets/frontend/js/frontend.js', array( 'jquery' ), true, true );
+
     }
 
     function load_edit_scripts(){
@@ -148,7 +138,6 @@ class WP_Site_Builder {
         wp_enqueue_style( 'bootstrap-colorpicker', WP_SITE_BUILDER_URL.'assets/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css' );
         wp_enqueue_media();
 
-
         wp_enqueue_script( 'jquery' );
         wp_enqueue_script( 'query-ui-core' );
         wp_enqueue_script( 'jquery-ui-widget' );
@@ -158,7 +147,6 @@ class WP_Site_Builder {
         wp_enqueue_script( 'jquery-ui-resizable' );
         wp_enqueue_script( 'json2' );
         wp_enqueue_script( 'underscore' );
-
 
         /// tinyMCE editor
         /*
