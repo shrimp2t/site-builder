@@ -49,7 +49,6 @@ Array.prototype.toObject = function(keys){
             // data, element, modal , section
             field.element.html( field.data.label );
 
-            
             var css_id =  field.element.attr( 'data-css-id' ) || '';
 
             if ( css_id != '' ) {

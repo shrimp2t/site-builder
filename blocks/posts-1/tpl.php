@@ -15,7 +15,6 @@ $section_id = uniqid('s-');
         if ( isset( $title['_css'] ) ) {
             wp_sb_template()->add_css( '.'.$section_id.' .post-heading', $title['_css'] );
         }
-
         ?>
         <h1<?php wp_sb_editing_field( 'title'); ?> class="post-heading"><?php echo $title['label']; ?></h1>
         <?php
